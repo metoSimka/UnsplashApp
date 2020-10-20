@@ -19,6 +19,7 @@ class SearchViewController: UIViewController {
     
     private let placeholderImage = UIImage(named: "placeholder")
 
+    private var expectedDownloadedImageCount: Int = 0
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -28,7 +29,6 @@ class SearchViewController: UIViewController {
         RequestService.shared.addSearchTask("", currentPage: 1) { (imageDatas) in
             self.parseImageData(imageDatas: imageDatas)
         }
-        RequestService.shared.executeTaskFromQueue()
     }
     
     private func parseImageData(imageDatas: [ImageData]) {
@@ -74,13 +74,11 @@ class SearchViewController: UIViewController {
     }
     
     private func insertNewUnsplashImage(image: UnsplashImage) {
-        self.collectionView?.performBatchUpdates({
-            guard images.contains(image) == false else {
-                return
-            }
-            images.append(image)
-            self.collectionView.insertItems(at: [IndexPath(row: images.count - 1, section: 0)])
-        })
+        guard images.contains(image) == false else {
+            return
+        }
+        images.append(image)
+        self.collectionView.insertItems(at: [IndexPath(row: images.count - 1, section: 0)])
     }
 
     private func setupCollectionView() {
@@ -110,21 +108,20 @@ extension SearchViewController: UICollectionViewDataSource {
 }
 
 extension SearchViewController: UICollectionViewDelegate {
-
+    
     func collectionView(_ collectionView: UICollectionView,
-                 willDisplay cell: UICollectionViewCell,
-                   forItemAt indexPath: IndexPath) {
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
         if indexPath.row >= images.count - 8 {
             currentPage = currentPage + 1
             print("request for", currentPage)
-
-            let expectedCountImages = RequestService.shared.addSearchTask("", currentPage: currentPage) { imageDatas in
+            
+            let count = RequestService.shared.addSearchTask("", currentPage: currentPage) { imageDatas in
+                self.expectedDownloadedImageCount -= imageDatas.count
                 self.parseImageData(imageDatas: imageDatas)
                 RequestService.shared.executeTaskFromQueue()
             }
-//            let placeholderImageArray = Array(repeating: ImageModel.getDefaultImageModel(), count: expectedCountImages)
-//            self.insertNewResults(imageModel: placeholderImageArray)
-            RequestService.shared.executeTaskFromQueue()
+            expectedDownloadedImageCount += count
         }
     }
 }
@@ -133,18 +130,18 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let yourWidth = collectionView.bounds.width/4.0
         let yourHeight = yourWidth
-
+        
         return CGSize(width: yourWidth, height: yourHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets.zero
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }

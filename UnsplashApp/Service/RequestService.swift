@@ -24,10 +24,11 @@ class RequestService {
     let defaultSession = URLSession(configuration: .default)
     
     private var taskQueue: [RequestTask] = []
+    private var downloadImageTaskQueue: [RequestTask] = []
     
-    public func addSearchTask(_ text: String, currentPage: Int, completion: (([ImageData]) -> Void)?) {
+    public func addSearchTask(_ text: String, currentPage: Int, completion: (([ImageData]) -> Void)?) -> Int {
         guard let url = with(defaultStartPageRequest, currentPage: currentPage) else {
-            return
+            return RequestService.perPage
         }
         getSearchResults(url: url, searchText: text) { (imageModel, error) in
             guard let image = imageModel else {
@@ -35,7 +36,7 @@ class RequestService {
             }
             completion?(image)
         }
-        return
+        return RequestService.perPage
     }
     
     public func with(_ string: String, currentPage: Int) -> URL? {
@@ -49,8 +50,9 @@ class RequestService {
         guard taskExist == false else {
             return
         }
-
+        print("Should start request")
         let dataTask = defaultSession.dataTask(with: urlRequest, completionHandler: { (data, response, error) in
+            print("response")
             if let requestTask = self.taskQueue.first(where: {$0.urlRequest == urlRequest}) {
                 requestTask.task.cancel()
                 guard let index = self.taskQueue.firstIndex(where: {$0.urlRequest == urlRequest}) else {
@@ -69,6 +71,7 @@ class RequestService {
         })
         let task = RequestTask(urlRequest: urlRequest, task: dataTask)
         self.taskQueue.append(task)
+        task.task.resume()
     }
     
     public func executeTaskFromQueue() {
@@ -80,18 +83,17 @@ class RequestService {
         self.taskQueue.first?.task.resume()
     }
     
-    
     public func downloadSingleImage(_ url: URL, completion: @escaping(UIImage?) -> Void) {
-        loadImage(url: url) { image in
+        let urlRequest = URLRequest(url: url)
+        let dataTask = loadImage(url: urlRequest) { image in
             completion(image)
         }
+        let downloadTask = RequestTask(urlRequest: urlRequest, task: dataTask)
+        downloadImageTaskQueue.append(downloadTask)
+        downloadTask.task.resume()
     }
     
-    @discardableResult func loadImage(url: URL, completion: @escaping(UIImage?) -> Void) -> URLSessionDataTask? {
-//        if let imageFromCache = imageCache.object(forKey: url.absoluteString as AnyObject) as? UIImage {
-//            completion(imageFromCache)
-//            return nil
-//        }
+    @discardableResult func loadImage(url: URLRequest, completion: @escaping(UIImage?) -> Void) -> URLSessionDataTask {
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             do {
                 guard let data = data else {
@@ -100,16 +102,13 @@ class RequestService {
                 guard let image = UIImage(data: data) else {
                     return
                 }
-//                self.imageCache.setObject(image, forKey: url.absoluteString as AnyObject)
                 DispatchQueue.main.async {
                     completion(image)
                 }
             }
         }
-        task.resume()
         return task
     }
-
 }
 
 class RequestTask {
