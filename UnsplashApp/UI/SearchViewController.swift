@@ -11,159 +11,120 @@ import UIKit
 
 class SearchViewController: UIViewController {
     static private let perPage = 12
-    
+
     private let defaultStartPageRequest = "photos?per_page=\(perPage);popular"
     private var currentPage = 1
-    private var imageModels: [ImageModel] = []
+    
+    private var images: [UnsplashImage] = []
+    
     private let placeholderImage = UIImage(named: "placeholder")
-    
-    var activeDownloads: [URL: DownloadRequest] = [:]
-    
-    lazy var downloadsSession: URLSession = {
-      let configuration = URLSessionConfiguration.default
-      
-      return URLSession(configuration: configuration,
-                        delegate: self,
-                        delegateQueue: nil)
-    }()
-    
-    let defaultSession = URLSession(configuration: .default)
-    var dataTask: URLSessionDataTask?
-    
-    private func getSearchResults(url: URL,searchText: String, completion: @escaping(Int)->Void) {
-        dataTask?.cancel()
-        var urlRequest = URLRequest(url: url)
-        urlRequest.setValue("Client-ID \(Constants.accessKey)", forHTTPHeaderField: "Authorization")
-        dataTask = defaultSession.dataTask(with: urlRequest, completionHandler: { (data, response, error) in
-            self.dataTask = nil
-            if let err = error {
-                print(err)
-                return
-            }
-            guard let data = data else {
-                return
-            }
-            do {
-                let image = try? JSONDecoder().decode([ImageModel].self, from: data)
-                completion(self?.tracks, self?.errorMessage ?? "")
-            }
-        })
-    }
-    
+
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
-        guard let url = with(defaultStartPageRequest, currentPage: 1) else {
-            return
+        RequestService.shared.addSearchTask("", currentPage: 1) { (imageDatas) in
+            self.parseImageData(imageDatas: imageDatas)
         }
-        request(url) { imageModel in
-            guard let imageModel = imageModel else {
+        RequestService.shared.executeTaskFromQueue()
+    }
+    
+    private func parseImageData(imageDatas: [ImageData]) {
+        for imageData in imageDatas {
+            let imageModel = UnsplashImage()
+            guard let thumbUrl = URL(string: imageData.urls.thumb) else {
                 return
             }
+            guard let fullUrl = URL(string: imageData.urls.full) else {
+                return
+            }
+            imageModel.highUrl = fullUrl
+            imageModel.lowUrl = thumbUrl
             DispatchQueue.main.async {
-                self.imageModels.append(contentsOf: imageModel)
-                self.collectionView.reloadData()
+                self.insertNewUnsplashImage(image: imageModel)
+            }
+            RequestService.shared.downloadSingleImage(thumbUrl) { image in
+                guard let thumbImage = image else {
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.updateImageModel(url: thumbUrl, image: thumbImage)
+                }
             }
         }
-
-        // Do any additional setup after loading the view.
     }
     
-    private func searchImage(_ text: String) {
-        
-    }
-
-    func with(_ string: String, currentPage: Int) -> URL? {
-        return URL(string: "\(Constants.baseUrl)\(string);page=\(currentPage)")
+    private func updateImageModel(url: URL, image: UIImage) {
+        guard let imageModel = images.last(where: { (item) -> Bool in
+            if item.lowUrl == url {
+                return true
+            } else {
+                return false
+            }
+        }) else {
+            return
+        }
+        guard let index: Int = images.firstIndex(of: imageModel) else {
+            return
+        }
+        imageModel.lowImage = image
+        self.collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
     }
     
+    private func insertNewUnsplashImage(image: UnsplashImage) {
+        self.collectionView?.performBatchUpdates({
+            guard images.contains(image) == false else {
+                return
+            }
+            images.append(image)
+            self.collectionView.insertItems(at: [IndexPath(row: images.count - 1, section: 0)])
+        })
+    }
+
     private func setupCollectionView() {
         collectionView.register( UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
         collectionView.dataSource = self
         collectionView.delegate = self
     }
-    
-    private func request(_ url: URL, completion: @escaping([ImageModel]?) -> Void ) {
-        let concurrentQueue = DispatchQueue(label: "request", attributes: .concurrent)
-//        let downloadableItems = Array(repeating: ImageModel(), count: SearchViewController.perPage)
-//        self.imageModels.append(contentsOf: downloadableItems)
-        concurrentQueue.sync {
-            var urlRequest = URLRequest(url: url)
-            urlRequest.setValue("Client-ID \(Constants.accessKey)", forHTTPHeaderField: "Authorization")
-            URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-                guard let data = data else {
-                    return
-                }
-                do {
-                    let image = try? JSONDecoder().decode([ImageModel].self, from: data)
-                    completion(image)
-                }
-            }.resume()
-        }
-    }
-
-    private func updateImageModel(newImageList: [ImageModel]) {
-        var filteredImages: [ImageModel] = []
-        let currentCount = imageModels.count
-        for image in newImageList {
-            let contains = imageModels.contains(where: { (item) -> Bool in
-                if item == image {
-                    return true
-                } else {
-                    return false
-                }
-            })
-            guard contains == false else {
-                continue
-            }
-            filteredImages.append(image)
-        }
-        imageModels.append(contentsOf: filteredImages)
-        collectionView.reloadData()
-    }
 }
 
 extension SearchViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageModels.count
+        return images.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as?  ImageCollectionViewCell else {
             return UICollectionViewCell()
         }
-        let imageModel = imageModels[indexPath.row]
-        cell.setUrls(imageModel)
+        guard indexPath.row > 0 else {
+            return cell
+        }
+        let image = images[indexPath.row]
+
+        cell.setImage(image.lowImage)
         return cell
     }
 }
 
 extension SearchViewController: UICollectionViewDelegate {
+
     func collectionView(_ collectionView: UICollectionView,
                  willDisplay cell: UICollectionViewCell,
                    forItemAt indexPath: IndexPath) {
-        return
-        if indexPath.row >= imageModels.count - 8 {
-            let curPage = imageModels.count/SearchViewController.perPage
-            guard currentPage - 1 < curPage else {
-                return
-            }
+        if indexPath.row >= images.count - 8 {
             currentPage = currentPage + 1
             print("request for", currentPage)
-            guard let url = with(defaultStartPageRequest, currentPage: currentPage) else {
-                return
+
+            let expectedCountImages = RequestService.shared.addSearchTask("", currentPage: currentPage) { imageDatas in
+                self.parseImageData(imageDatas: imageDatas)
+                RequestService.shared.executeTaskFromQueue()
             }
-            request(url) { (images) in
-                guard let images = images else {
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.updateImageModel(newImageList: images)
-                }
-            }
+//            let placeholderImageArray = Array(repeating: ImageModel.getDefaultImageModel(), count: expectedCountImages)
+//            self.insertNewResults(imageModel: placeholderImageArray)
+            RequestService.shared.executeTaskFromQueue()
         }
     }
 }
@@ -204,11 +165,4 @@ class DownloadRequest {
 class ImageLoadManager {
     static let manager = ImageLoadManager()
     var cachedImages = [String: UIImage]()
-}
-    
-extension SearchViewController: URLSessionDownloadDelegate {
-  func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
-                  didFinishDownloadingTo location: URL) {
-    print("Finished downloading to \(location).")
-  }
 }
