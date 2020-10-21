@@ -56,6 +56,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     @discardableResult func loadImage(url: URL, completion: @escaping(UIImage?) -> Void) -> URLSessionDataTask? {
         if let imageFromCache = SimpleImageCache.shared.getImage(url: url) {
             completion(imageFromCache)
+            return nil
         } else {
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
                 do {

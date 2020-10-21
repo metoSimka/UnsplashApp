@@ -3,4 +3,54 @@
    uuid = "E89A66D7-4E28-4A05-BC48-117EC7793AE0"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "05E9D21A-EB12-48A8-9805-62E0FFB2C70D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UnsplashApp/UI/ImageCollectionViewCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "loadImage(url:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "05E9D21A-EB12-48A8-9805-62E0FFB2C70D - da1241cdfaeb5216"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "UnsplashApp.ImageCollectionViewCell.loadImage(url: Foundation.URL, completion: (Swift.Optional&lt;__C.UIImage&gt;) -&gt; ()) -&gt; Swift.Optional&lt;__C.NSURLSessionDataTask&gt;"
+                  moduleName = "UnsplashApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/metosimka/Desktop/UnsplashApp/UnsplashApp/UI/ImageCollectionViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "61"
+                  endingLineNumber = "61"
+                  offsetFromSymbolStart = "388">
+               </Location>
+               <Location
+                  uuid = "05E9D21A-EB12-48A8-9805-62E0FFB2C70D - bd3c8be69ac2c59e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in UnsplashApp.ImageCollectionViewCell.loadImage(url: Foundation.URL, completion: (Swift.Optional&lt;__C.UIImage&gt;) -&gt; ()) -&gt; Swift.Optional&lt;__C.NSURLSessionDataTask&gt;"
+                  moduleName = "UnsplashApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/metosimka/Desktop/UnsplashApp/UnsplashApp/UI/ImageCollectionViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "63"
+                  endingLineNumber = "63"
+                  offsetFromSymbolStart = "368">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
