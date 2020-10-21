@@ -34,7 +34,9 @@ class RequestService {
             guard let image = imageModel else {
                 return
             }
-            completion?(image)
+            DispatchQueue.main.async {
+                completion?(image)
+            }
         }
         return RequestService.perPage
     }

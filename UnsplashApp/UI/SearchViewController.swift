@@ -15,7 +15,7 @@ class SearchViewController: UIViewController {
     private let defaultStartPageRequest = "photos?per_page=\(perPage);popular"
     private var currentPage = 1
     
-    private var images: [UnsplashImage] = []
+    private var images: [ImageData] = []
     
     private let placeholderImage = UIImage(named: "placeholder")
 
@@ -27,64 +27,32 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         setupCollectionView()
         RequestService.shared.addSearchTask("", currentPage: 1) { (imageDatas) in
-            self.parseImageData(imageDatas: imageDatas)
+            self.updateImages(imageDatas)
         }
     }
     
-    private func parseImageData(imageDatas: [ImageData]) {
+
+    private func updateImages(_ imageDatas: [ImageData]) {
         for imageData in imageDatas {
-            let imageModel = UnsplashImage()
-            guard let thumbUrl = URL(string: imageData.urls.thumb) else {
+            let contains = images.contains(where: {$0.id == imageData.id})
+            guard contains == false else {
                 return
             }
-            guard let fullUrl = URL(string: imageData.urls.full) else {
-                return
-            }
-            imageModel.highUrl = fullUrl
-            imageModel.lowUrl = thumbUrl
-            DispatchQueue.main.async {
-                self.insertNewUnsplashImage(image: imageModel)
-            }
-            RequestService.shared.downloadSingleImage(thumbUrl) { image in
-                guard let thumbImage = image else {
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.updateImageModel(url: thumbUrl, image: thumbImage)
-                }
-            }
+            self.images.append(imageData)
+            self.collectionView.insertItems(at: [IndexPath(row: self.images.count - 1, section: 0)])
         }
-    }
-    
-    private func updateImageModel(url: URL, image: UIImage) {
-        guard let imageModel = images.last(where: { (item) -> Bool in
-            if item.lowUrl == url {
-                return true
-            } else {
-                return false
-            }
-        }) else {
-            return
-        }
-        guard let index: Int = images.firstIndex(of: imageModel) else {
-            return
-        }
-        imageModel.lowImage = image
-        self.collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
-    }
-    
-    private func insertNewUnsplashImage(image: UnsplashImage) {
-        guard images.contains(image) == false else {
-            return
-        }
-        images.append(image)
-        self.collectionView.insertItems(at: [IndexPath(row: images.count - 1, section: 0)])
     }
 
     private func setupCollectionView() {
         collectionView.register( UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
         collectionView.dataSource = self
         collectionView.delegate = self
+    }
+    
+    private func printIds() {
+        for image in images {
+            print(image.id)
+        }
     }
 }
 
@@ -100,9 +68,9 @@ extension SearchViewController: UICollectionViewDataSource {
         guard indexPath.row > 0 else {
             return cell
         }
-        let image = images[indexPath.row]
-
-        cell.setImage(image.lowImage)
+        let imageModel = images[indexPath.row]
+        cell.setup(imageModel)
+        
         return cell
     }
 }
@@ -117,8 +85,8 @@ extension SearchViewController: UICollectionViewDelegate {
             print("request for", currentPage)
             
             let count = RequestService.shared.addSearchTask("", currentPage: currentPage) { imageDatas in
+                self.updateImages(imageDatas)
                 self.expectedDownloadedImageCount -= imageDatas.count
-                self.parseImageData(imageDatas: imageDatas)
                 RequestService.shared.executeTaskFromQueue()
             }
             expectedDownloadedImageCount += count

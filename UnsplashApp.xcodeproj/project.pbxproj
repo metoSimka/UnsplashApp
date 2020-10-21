@@ -33,7 +33,7 @@
 		A5E9183C253E01AB002F5EC3 /* SFProText-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5E91837253E01AB002F5EC3 /* SFProText-Bold.ttf */; };
 		A5E91840253E052B002F5EC3 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E9183E253E052B002F5EC3 /* ImageCollectionViewCell.swift */; };
 		A5E91841253E052B002F5EC3 /* ImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5E9183F253E052B002F5EC3 /* ImageCollectionViewCell.xib */; };
-		A5E91849253E1F50002F5EC3 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E91848253E1F50002F5EC3 /* ImageCache.swift */; };
+		A5E91849253E1F50002F5EC3 /* SimpleImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E91848253E1F50002F5EC3 /* SimpleImageCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,7 +65,7 @@
 		A5E91837253E01AB002F5EC3 /* SFProText-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Bold.ttf"; sourceTree = "<group>"; };
 		A5E9183E253E052B002F5EC3 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		A5E9183F253E052B002F5EC3 /* ImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageCollectionViewCell.xib; sourceTree = "<group>"; };
-		A5E91848253E1F50002F5EC3 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		A5E91848253E1F50002F5EC3 /* SimpleImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleImageCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,7 +149,7 @@
 				A5E91817253DDF4A002F5EC3 /* SearchViewController.swift */,
 				A5E91818253DDF4A002F5EC3 /* SearchViewController.xib */,
 				A5E9183E253E052B002F5EC3 /* ImageCollectionViewCell.swift */,
-				A5E91848253E1F50002F5EC3 /* ImageCache.swift */,
+				A5E91848253E1F50002F5EC3 /* SimpleImageCache.swift */,
 				A5E9183F253E052B002F5EC3 /* ImageCollectionViewCell.xib */,
 			);
 			path = UI;
@@ -298,7 +298,7 @@
 			files = (
 				A5532C86251A626C00D9C715 /* Thumbnail+CoreDataClass.swift in Sources */,
 				A5E91819253DDF4A002F5EC3 /* SearchViewController.swift in Sources */,
-				A5E91849253E1F50002F5EC3 /* ImageCache.swift in Sources */,
+				A5E91849253E1F50002F5EC3 /* SimpleImageCache.swift in Sources */,
 				A5532C87251A626C00D9C715 /* Thumbnail+CoreDataProperties.swift in Sources */,
 				A5532C6A251A5C0200D9C715 /* AppDelegate.swift in Sources */,
 				A5532C88251A626C00D9C715 /* HResolution+CoreDataClass.swift in Sources */,

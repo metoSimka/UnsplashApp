@@ -17,22 +17,22 @@ struct ImageData: Decodable {
     let urls: ImageURLs
 }
 
-class UnsplashImage: Equatable {
-    static func == (lhs: UnsplashImage, rhs: UnsplashImage) -> Bool {
-        if lhs.lowUrl == rhs.lowUrl,
-           rhs.highUrl == rhs.highUrl {
-            return true
-        } else {
-            return false
-        }
-    }
-    
-    var lowUrl: URL?
-    var highUrl: URL?
-    
-    var lowImage: UIImage?
-    var highImage: UIImage?
-}
+//class UnsplashImage: Equatable {
+//    static func == (lhs: UnsplashImage, rhs: UnsplashImage) -> Bool {
+//        if lhs.lowUrl == rhs.lowUrl,
+//           rhs.highUrl == rhs.highUrl {
+//            return true
+//        } else {
+//            return false
+//        }
+//    }
+//    
+//    var lowUrl: URL?
+//    var highUrl: URL?
+//    
+//    var lowImage: UIImage?
+//    var highImage: UIImage?
+//}
 
 extension ImageData: Equatable {
     static func == (lhs: ImageData, rhs: ImageData) -> Bool {
