@@ -1,5 +1,5 @@
 //
-//  ImageURLs.swift
+//  ImageModel.swift
 //  UnsplashApp
 //
 //  Created by metoSimka on 19.10.2020.
@@ -7,6 +7,20 @@
 //
 
 import Foundation
+import UIKit
+
+struct ResultsStruct: Decodable {
+    let urls: ImageURLs
+}
+
+struct ImageSearchResponse: Decodable {
+    let total: Int
+    let results: [ResultsStruct]
+}
+
+struct ImagePopularResponse: Decodable {
+    let urls: ImageURLs
+}
 
 struct ImageURLs: Decodable, Equatable {
     let raw: String
@@ -14,5 +28,5 @@ struct ImageURLs: Decodable, Equatable {
     let regular: String
     let small: String
     let thumb: String
-    let keyNotExist: String?
 }
+

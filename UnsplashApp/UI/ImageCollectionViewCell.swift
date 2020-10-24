@@ -8,18 +8,26 @@
 
 import UIKit
 
+// MARK: - Protocol Conformance
 class ImageCollectionViewCell: UICollectionViewCell {
+    
+    // MARK: - Public constants
+    
+    // MARK: - Public variables
 
-    private var lowImage: UIImage?
-    private var highImage: UIImage?
-    
-    private var imageModel: ImageData?
-    
+    // MARK: - IBOutlets
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var spinner: UIActivityIndicatorView!
+    // MARK: - Private constants
     
-    var dataTask: URLSessionDataTask?
+    // MARK: - Private variables
+    private var lowImage: UIImage?
+    private var highImage: UIImage?
+    private var dataTask: URLSessionDataTask?
     
+    private var imageModel: ImageURLs?
+    
+    // MARK: - Lifecycle
     override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = nil
@@ -29,63 +37,38 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        updateImageView(lowImage: lowImage, highImage: highImage)
+        updateImageView(lowImage: lowImage)
     }
-
-    public func withoutImage() {
-        spinner.startAnimating()
-    }
+        
+    // MARK: - IBActions
     
-    public func setup(_ imageModel: ImageData) {
+    // MARK: - Public methods
+    public func setup(_ imageModel: ImageURLs) {
         self.imageModel = imageModel
-        guard let thumbUrl: URL = URL(string: imageModel.urls.thumb ) else {
+        guard let thumbUrl: URL = URL(string: imageModel.thumb ) else {
             return
         }
-        self.dataTask = loadImage(url: thumbUrl) { image in
+        let requestService = RequestService()
+        self.dataTask = requestService.loadImage(url: thumbUrl) { image in
             self.lowImage = image
-            self.updateImageView(lowImage: image, highImage: nil)
+            self.updateImageView(lowImage: image)
             self.stopTask()
         }
     }
     
+    // MARK: - Private methods
     private func stopTask() {
         self.dataTask?.cancel()
         self.dataTask = nil
     }
     
-    @discardableResult func loadImage(url: URL, completion: @escaping(UIImage?) -> Void) -> URLSessionDataTask? {
-        if let imageFromCache = SimpleImageCache.shared.getImage(url: url) {
-            completion(imageFromCache)
-            return nil
-        } else {
-            let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-                do {
-                    guard let data = data else {
-                        return
-                    }
-                    guard let image = UIImage(data: data) else {
-                        return
-                    }
-                    DispatchQueue.main.async {
-                        SimpleImageCache.shared.saveToCache(url: url, image: image)
-                        completion(image)
-                    }
-                }
-            }
-            task.resume()
-            return task
-        }
-        return nil
-    }
 
-    private func updateImageView(lowImage: UIImage?, highImage: UIImage?) {
-        if let highQImage = highImage {
-            spinner.stopAnimating()
-            self.imageView.image = highQImage
-        } else if let lowQImage = lowImage {
+    private func updateImageView(lowImage: UIImage?) {
+        if let lowQImage = lowImage {
             spinner.stopAnimating()
             self.imageView.image = lowQImage
         } else {
+            self.imageView.image = nil
             spinner.startAnimating()
         }
     }

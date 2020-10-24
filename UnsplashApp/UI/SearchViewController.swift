@@ -8,33 +8,75 @@
 
 import UIKit
 
-
 class SearchViewController: UIViewController {
-    static private let perPage = 12
-
-    private let defaultStartPageRequest = "photos?per_page=\(perPage);popular"
-    private var currentPage = 1
     
-    private var images: [ImageData] = []
+    // MARK: - Public constants
     
-    private let placeholderImage = UIImage(named: "placeholder")
+    // MARK: - Public variables
 
-    private var expectedDownloadedImageCount: Int = 0
+    // MARK: - IBOutlets
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
     
+    // MARK: - Private constants
+    private let maxPage = 100
+    private let requestService = RequestService()
+    
+    // MARK: - Private variables
+    static private let perPage = 12
+
+    private var currentPage = 1
+    private var images: [ImageURLs] = []
+    private var currentQuery: String?
+    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
-        RequestService.shared.addSearchTask("", currentPage: 1) { (imageDatas) in
+        requestService.addSearchTask(nil, currentPage: 1) { (imageDatas) in
             self.updateImages(imageDatas)
         }
     }
     
-
-    private func updateImages(_ imageDatas: [ImageData]) {
+     // MARK: - IBActions
+    @IBAction func search(_ sender: UIButton) {
+        resetVariables()
+        currentQuery = getQueryFromTextField()
+        requestService.stopAllTasks()
+        searchImages(searchText: currentQuery, page: currentPage)
+        self.collectionView.reloadData()
+    }
+    
+    private func resetVariables() {
+        self.currentPage = 1
+        self.images = []
+        ImageCache.shared.cache.removeAllObjects()
+    }
+    
+    // MARK: - Public methods
+    
+    // MARK: - Private methods
+    private func getQueryFromTextField() -> String? {
+        guard let text = textField.text else {
+            return nil
+        }
+        let filteredText = text.replacingOccurrences(of: " ", with: "")
+        if filteredText == "" {
+            return nil
+        }
+        return filteredText
+    }
+    
+    private func searchImages(searchText: String?, page: Int) {
+        requestService.addSearchTask(currentQuery, currentPage: page) { imageDatas in
+            self.updateImages(imageDatas)
+            self.requestService.executeTaskFromQueue()
+        }
+    }
+    
+    private func updateImages(_ imageDatas: [ImageURLs]) {
         for imageData in imageDatas {
-            let contains = images.contains(where: {$0.id == imageData.id})
+            let contains = images.contains(where: {$0 == imageData})
             guard contains == false else {
                 return
             }
@@ -48,14 +90,9 @@ class SearchViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
     }
-    
-    private func printIds() {
-        for image in images {
-            print(image.id)
-        }
-    }
 }
 
+// MARK: - Protocol Conformance
 extension SearchViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return images.count
@@ -64,9 +101,6 @@ extension SearchViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as?  ImageCollectionViewCell else {
             return UICollectionViewCell()
-        }
-        guard indexPath.row > 0 else {
-            return cell
         }
         let imageModel = images[indexPath.row]
         cell.setup(imageModel)
@@ -80,16 +114,10 @@ extension SearchViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         willDisplay cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
-        if indexPath.row >= images.count - 8 {
-            currentPage = currentPage + 1
-            print("request for", currentPage)
-            
-            let count = RequestService.shared.addSearchTask("", currentPage: currentPage) { imageDatas in
-                self.updateImages(imageDatas)
-                self.expectedDownloadedImageCount -= imageDatas.count
-                RequestService.shared.executeTaskFromQueue()
-            }
-            expectedDownloadedImageCount += count
+        
+        if indexPath.row >= images.count - 8, currentPage < maxPage {
+            currentPage += 1
+            searchImages(searchText: currentQuery, page: currentPage + 1)
         }
     }
 }
@@ -113,21 +141,4 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-}
-
-class DownloadRequest {
-  var isDownloading = false
-  var progress: Float = 0
-  var resumeData: Data?
-  var task: URLSessionDownloadTask?
-  var imageULR: URL
-  
-  init(imageULR: URL) {
-    self.imageULR = imageULR
-  }
-}
-
-class ImageLoadManager {
-    static let manager = ImageLoadManager()
-    var cachedImages = [String: UIImage]()
 }
