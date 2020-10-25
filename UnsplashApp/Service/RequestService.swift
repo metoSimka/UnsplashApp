@@ -15,6 +15,7 @@ class ExampleClass {
 class RequestService {
     // MARK: - Public constants
     
+    static let shared = RequestService()
     // MARK: - Public variables
     public var isDownloading = false
     
@@ -108,7 +109,7 @@ class RequestService {
         isDownloading = true
         self.taskQueue.first?.task.resume()
     }
-    
+//    https://images.unsplash.com/photo-1601758125997-67e236238ab0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjE3NTc3N30
     @discardableResult func loadImage(url: URL, completion: @escaping(UIImage?) -> Void) -> URLSessionDataTask? {
         guard let nsURL = url.absoluteString as NSString? else {
             return nil
@@ -151,6 +152,3 @@ class RequestService {
 }
 
 // MARK: - Protocol Conformance
-
-
-//"https://api.unsplash.com/search/photos?client_id=\(Constants.accessKey)&page=1&query=car"

@@ -16,15 +16,11 @@ class MainViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        openAuthorizationViewController()
-    }
-    
-    private func openAuthorizationViewController() {
+        self.navigationController?.modalPresentationStyle = .fullScreen
+        self.navigationController?.hidesBottomBarWhenPushed = true
         let vc = SearchViewController(nibName: "SearchViewController", bundle: nil)
-        let navVC = UINavigationController.init(rootViewController: vc)
-        navVC.modalPresentationStyle = .fullScreen
-        navVC.hidesBottomBarWhenPushed = true
-        navVC.setNavigationBarHidden(true, animated: false)
-        self.present(navVC, animated: false, completion: nil)
+        self.navigationController?.pushViewController(vc, animated: false)
+//        self.present(vc, animated: false, completion: nil)
+//        openAuthorizationViewController()
     }
 }

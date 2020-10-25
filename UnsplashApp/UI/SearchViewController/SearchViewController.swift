@@ -20,7 +20,6 @@ class SearchViewController: UIViewController {
     
     // MARK: - Private constants
     private let maxPage = 100
-    private let requestService = RequestService()
     
     // MARK: - Private variables
     static private let perPage = 12
@@ -29,11 +28,13 @@ class SearchViewController: UIViewController {
     private var images: [ImageURLs] = []
     private var currentQuery: String?
     
+    private var selectedIndexPath: IndexPath?
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
-        requestService.addSearchTask(nil, currentPage: 1) { (imageDatas) in
+        RequestService.shared.addSearchTask(nil, currentPage: 1) { (imageDatas) in
             self.updateImages(imageDatas)
         }
     }
@@ -42,20 +43,23 @@ class SearchViewController: UIViewController {
     @IBAction func search(_ sender: UIButton) {
         resetVariables()
         currentQuery = getQueryFromTextField()
-        requestService.stopAllTasks()
+        RequestService.shared.stopAllTasks()
         searchImages(searchText: currentQuery, page: currentPage)
         self.collectionView.reloadData()
     }
     
+    // MARK: - Public methods
+    public func syncSelectedIndexPath(indexPath: IndexPath) {
+        self.selectedIndexPath = indexPath
+    }
+    
+    // MARK: - Private methods
     private func resetVariables() {
         self.currentPage = 1
         self.images = []
         ImageCache.shared.cache.removeAllObjects()
     }
     
-    // MARK: - Public methods
-    
-    // MARK: - Private methods
     private func getQueryFromTextField() -> String? {
         guard let text = textField.text else {
             return nil
@@ -68,9 +72,9 @@ class SearchViewController: UIViewController {
     }
     
     private func searchImages(searchText: String?, page: Int) {
-        requestService.addSearchTask(currentQuery, currentPage: page) { imageDatas in
+        RequestService.shared.addSearchTask(currentQuery, currentPage: page) { imageDatas in
             self.updateImages(imageDatas)
-            self.requestService.executeTaskFromQueue()
+            RequestService.shared.executeTaskFromQueue()
         }
     }
     
@@ -104,7 +108,7 @@ extension SearchViewController: UICollectionViewDataSource {
         }
         let imageModel = images[indexPath.row]
         cell.setup(imageModel)
-        
+        cell.delegate = self
         return cell
     }
 }
@@ -140,5 +144,53 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+    }
+}
+
+extension SearchViewController: ImageCollectionViewCellDelegate {
+    func doubleTapCell(_ cell: ImageCollectionViewCell) {
+        guard let index = collectionView.indexPath(for: cell) else {
+            return
+        }
+        self.selectedIndexPath = index
+        let vc = ViewModeViewController(images: self.images, selectedIndex: index, rootVC: self)
+        RequestService.shared.stopAllTasks()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+}
+
+extension SearchViewController: ZoomingViewController {
+    func zoomingImageView(for transition: ZoomTransitioningDelegate) -> UIImageView? {
+        guard let indexPath = selectedIndexPath else {
+            return nil
+        }
+        if let cell  = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+            return cell.imageView
+        } else {
+            let visibleCell = collectionView.visibleCells
+            var visibleIndexes = visibleCell.map { (cell) -> IndexPath in
+                return (collectionView.indexPath(for: cell) ?? IndexPath(row: -1, section: -1))
+            }
+            visibleIndexes = visibleIndexes.filter({$0.row != -1})
+            guard let minIndex = visibleIndexes.min(by: {$0.row < $1.row}) else {
+                return nil
+            }
+            guard let maxIndex = visibleIndexes.max(by: {$0.row > $1.row}) else {
+                return nil
+            }
+            
+            if indexPath > maxIndex {
+                collectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
+                return nil
+            } else if indexPath < minIndex {
+                collectionView.scrollToItem(at: indexPath, at: .top, animated: false)
+                return nil
+            }
+        }
+        return nil
+    }
+    
+    func zoomingBackgroundView(for transiotion: ZoomTransitioningDelegate) -> UIView? {
+        return nil
     }
 }

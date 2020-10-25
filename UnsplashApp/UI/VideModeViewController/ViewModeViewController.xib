@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ViewModeViewController" customModule="UnsplashApp" customModuleProvider="target">
+            <connections>
+                <outlet property="collectionView" destination="nhB-i2-3Eg" id="WJ1-Zh-WWx"/>
+                <outlet property="imageView" destination="JLK-Im-xpE" id="TGX-NG-mit"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="nhB-i2-3Eg">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="cLf-uo-XDE">
+                        <size key="itemSize" width="128" height="128"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="JLK-Im-xpE">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </imageView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="nhB-i2-3Eg" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="0pd-Zl-Bdg"/>
+                <constraint firstItem="JLK-Im-xpE" firstAttribute="width" secondItem="nhB-i2-3Eg" secondAttribute="width" id="2Iu-Wo-W5p"/>
+                <constraint firstItem="nhB-i2-3Eg" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="49E-fj-OTe"/>
+                <constraint firstItem="JLK-Im-xpE" firstAttribute="centerY" secondItem="nhB-i2-3Eg" secondAttribute="centerY" id="9aI-x8-Rr9"/>
+                <constraint firstItem="JLK-Im-xpE" firstAttribute="height" secondItem="nhB-i2-3Eg" secondAttribute="height" id="Lud-O9-l8k"/>
+                <constraint firstAttribute="bottom" secondItem="nhB-i2-3Eg" secondAttribute="bottom" id="dX6-PY-bEk"/>
+                <constraint firstAttribute="trailing" secondItem="nhB-i2-3Eg" secondAttribute="trailing" id="eqf-o3-5cX"/>
+                <constraint firstItem="JLK-Im-xpE" firstAttribute="centerX" secondItem="nhB-i2-3Eg" secondAttribute="centerX" id="vqc-Fa-8bD"/>
+            </constraints>
+            <point key="canvasLocation" x="42" y="102"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
