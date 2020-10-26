@@ -24,14 +24,22 @@
                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="t4f-BO-iQS">
                         <rect key="frame" x="134.5" y="120" width="20" height="20"/>
                     </activityIndicatorView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wzK-BH-fMt">
+                        <rect key="frame" x="0.0" y="0.0" width="289" height="260"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.50428261956340603" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="wzK-BH-fMt" secondAttribute="trailing" id="3uo-eg-CGO"/>
+                <constraint firstItem="wzK-BH-fMt" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="6BT-YN-vjn"/>
                 <constraint firstAttribute="bottom" secondItem="x9V-KB-W5e" secondAttribute="bottom" id="B0s-q9-t2v"/>
                 <constraint firstAttribute="trailing" secondItem="x9V-KB-W5e" secondAttribute="trailing" id="GfW-Lt-mmq"/>
+                <constraint firstItem="wzK-BH-fMt" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="NEo-Hl-V3m"/>
                 <constraint firstItem="x9V-KB-W5e" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="OD5-O0-bDW"/>
+                <constraint firstAttribute="bottom" secondItem="wzK-BH-fMt" secondAttribute="bottom" id="XJS-yK-qZm"/>
                 <constraint firstItem="x9V-KB-W5e" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="caf-DA-o4B"/>
                 <constraint firstItem="t4f-BO-iQS" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="mO4-DQ-tfF"/>
                 <constraint firstItem="t4f-BO-iQS" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="th0-HA-FEb"/>
@@ -39,6 +47,7 @@
             <size key="customSize" width="289" height="260"/>
             <connections>
                 <outlet property="imageView" destination="x9V-KB-W5e" id="7qI-Qb-n89"/>
+                <outlet property="selectionMask" destination="wzK-BH-fMt" id="0JB-55-nwn"/>
                 <outlet property="spinner" destination="t4f-BO-iQS" id="CB9-NN-n2J"/>
             </connections>
             <point key="canvasLocation" x="-343" y="72"/>

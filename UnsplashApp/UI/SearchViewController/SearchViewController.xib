@@ -11,11 +11,16 @@
         <array key="SFProText-Light.ttf">
             <string>SFProText-Light</string>
         </array>
+        <array key="SFProText-Regular.ttf">
+            <string>SFProText-Regular</string>
+        </array>
     </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchViewController" customModule="UnsplashApp" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="QCF-CL-ZgL" id="rO8-qd-Xzs"/>
+                <outlet property="saveButton" destination="F5X-gv-34L" id="2sL-iI-5g8"/>
+                <outlet property="selectButton" destination="knv-lI-gcE" id="TRV-gv-B1x"/>
                 <outlet property="textField" destination="aDL-Db-4U8" id="3GF-ek-MBI"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -48,6 +53,7 @@
                             <constraints>
                                 <constraint firstAttribute="width" constant="64" id="5ft-VK-2yv"/>
                             </constraints>
+                            <fontDescription key="fontDescription" name="SFProText-Regular" family="SF Pro Text" pointSize="16"/>
                             <state key="normal" title="Search">
                                 <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </state>
@@ -95,6 +101,7 @@
                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="64" id="Khe-Xh-uTw"/>
                                 <constraint firstAttribute="width" constant="64" id="da1-bA-wbT"/>
                             </constraints>
+                            <fontDescription key="fontDescription" name="SFProText-Regular" family="SF Pro Text" pointSize="14"/>
                             <state key="normal" title="Save">
                                 <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </state>
@@ -110,18 +117,22 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                             <connections>
-                                <action selector="search:" destination="-1" eventType="touchUpInside" id="5fi-K0-KZy"/>
+                                <action selector="saveSelectedImages:" destination="-1" eventType="touchUpInside" id="SdE-j7-7Kq"/>
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="knv-lI-gcE">
                             <rect key="frame" x="24" y="0.0" width="64" height="28"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="64" id="Sfo-uO-GdC"/>
                                 <constraint firstAttribute="width" constant="64" id="zSF-iI-Wzs"/>
                             </constraints>
+                            <fontDescription key="fontDescription" name="SFProText-Regular" family="SF Pro Text" pointSize="14"/>
+                            <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <state key="normal" title="Select">
                                 <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </state>
+                            <state key="selected" title="Cancel">
+                                <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </state>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -135,7 +146,7 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                             <connections>
-                                <action selector="search:" destination="-1" eventType="touchUpInside" id="ddj-uj-rhD"/>
+                                <action selector="selectButtonTouched:" destination="-1" eventType="touchUpInside" id="o9v-aV-IWv"/>
                             </connections>
                         </button>
                     </subviews>

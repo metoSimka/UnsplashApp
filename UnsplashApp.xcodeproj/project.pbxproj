@@ -24,6 +24,7 @@
 		A55448482544666700AF3248 /* ViewModeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55448462544666700AF3248 /* ViewModeCollectionViewCell.swift */; };
 		A55448492544666700AF3248 /* ViewModeCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A55448472544666700AF3248 /* ViewModeCollectionViewCell.xib */; };
 		A554484D25446B6200AF3248 /* ZoomTransitionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A554484C25446B6200AF3248 /* ZoomTransitionDelegate.swift */; };
+		A55448512545A07100AF3248 /* SaveImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55448502545A07100AF3248 /* SaveImageService.swift */; };
 		A557F9A5251A7EFA002AD3B8 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A557F9A4251A7EFA002AD3B8 /* DataManager.swift */; };
 		A55A44A825413E4B00EC0D36 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55A44A725413E4B00EC0D36 /* ImageCache.swift */; };
 		A5A5E72D253F290500003EEF /* RequestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A5E72C253F290500003EEF /* RequestService.swift */; };
@@ -61,6 +62,7 @@
 		A55448462544666700AF3248 /* ViewModeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModeCollectionViewCell.swift; sourceTree = "<group>"; };
 		A55448472544666700AF3248 /* ViewModeCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewModeCollectionViewCell.xib; sourceTree = "<group>"; };
 		A554484C25446B6200AF3248 /* ZoomTransitionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomTransitionDelegate.swift; sourceTree = "<group>"; };
+		A55448502545A07100AF3248 /* SaveImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveImageService.swift; sourceTree = "<group>"; };
 		A557F9A4251A7EFA002AD3B8 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		A55A44A725413E4B00EC0D36 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		A5A5E72C253F290500003EEF /* RequestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestService.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 		A557F9A1251A7EC8002AD3B8 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				A55448502545A07100AF3248 /* SaveImageService.swift */,
 				A55A44A725413E4B00EC0D36 /* ImageCache.swift */,
 				A557F9A4251A7EFA002AD3B8 /* DataManager.swift */,
 				A5A5E72C253F290500003EEF /* RequestService.swift */,
@@ -341,6 +344,7 @@
 				A5E91819253DDF4A002F5EC3 /* SearchViewController.swift in Sources */,
 				A5544843254465A500AF3248 /* ViewModeViewController.swift in Sources */,
 				A5532C87251A626C00D9C715 /* Thumbnail+CoreDataProperties.swift in Sources */,
+				A55448512545A07100AF3248 /* SaveImageService.swift in Sources */,
 				A55448482544666700AF3248 /* ViewModeCollectionViewCell.swift in Sources */,
 				A5532C6A251A5C0200D9C715 /* AppDelegate.swift in Sources */,
 				A554484D25446B6200AF3248 /* ZoomTransitionDelegate.swift in Sources */,

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class SearchViewController: UIViewController {
     
@@ -17,25 +18,56 @@ class SearchViewController: UIViewController {
     // MARK: - IBOutlets
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var selectButton: UIButton!
+    @IBOutlet weak var saveButton: UIButton!
     
     // MARK: - Private constants
     private let maxPage = 100
+    static private let perPage = 12
+    private let disabledAlpha: CGFloat = 0.3
+    private let defaultAnimationTime: TimeInterval = 0.2
+    private let countImagesInRow = 4
     
     // MARK: - Private variables
-    static private let perPage = 12
 
     private var currentPage = 1
     private var images: [ImageURLs] = []
     private var currentQuery: String?
     
-    private var selectedIndexPath: IndexPath?
+    private var doubleTappedIndexPath: IndexPath?
+    
+    private var inSelectMode = false
+    private var selectedIndexPaths: [IndexPath] = []
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        SaveImageService.shared.clearAllCoreData()
+        setupSelectButton()
         setupCollectionView()
         RequestService.shared.addSearchTask(nil, currentPage: 1) { (imageDatas) in
             self.updateImages(imageDatas)
+        }
+        updateSaveButton()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        SaveImageService.shared.loadImages { (fetched) in
+            var images: [UIImage] = []
+            guard let thumbnailList = fetched else {
+                return
+            }
+            for thumbnail in thumbnailList {
+                guard let data = thumbnail.imageData else {
+                    return
+                }
+                guard let image = UIImage(data: data) else {
+                    return
+                }
+                images.append(image)
+            }
+            print(images.count)
         }
     }
     
@@ -48,12 +80,61 @@ class SearchViewController: UIViewController {
         self.collectionView.reloadData()
     }
     
-    // MARK: - Public methods
-    public func syncSelectedIndexPath(indexPath: IndexPath) {
-        self.selectedIndexPath = indexPath
+    @IBAction func selectButtonTouched(_ sender: UIButton) {
+        selectButton.isSelected = !selectButton.isSelected
+        inSelectMode = selectButton.isSelected
+        updateSaveButton()
+        selectedIndexPaths = []
+        if inSelectMode == false {
+            self.collectionView.reloadData()
+        }
     }
     
+    @IBAction func saveSelectedImages(_ sender: UIButton) {
+
+        for indexPath in selectedIndexPaths {
+            let urls = images[indexPath.row]
+            RequestService.shared.loadImage(urlString: urls.thumb) { (imageThumb) in
+                guard let imageThumbnail = imageThumb else {
+                    return
+                }
+                RequestService.shared.loadImage(urlString: urls.regular) { (imageReg) in
+                    guard let imageRegular = imageReg else {
+                        return
+                    }
+                    SaveImageService.shared.prepareImageForSaving(thumbImage: imageThumbnail, thumbUrl: urls.thumb, highResolutionImage: imageRegular)
+                    DispatchQueue.main.async {
+                        print("Image saved")
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: - Public methods
+    public func syncSelectedIndexPath(indexPath: IndexPath) {
+        self.doubleTappedIndexPath = indexPath
+    }
+
     // MARK: - Private methods
+    private func setupSelectButton() {
+        selectButton.setTitle("Cancel", for: .selected)
+        selectButton.setTitle("Select", for: .normal)
+        selectButton.isSelected = false
+    }
+
+    private func updateSaveButton() {
+        UIView.animate(withDuration: defaultAnimationTime) {
+            if self.inSelectMode {
+                self.saveButton.alpha = 1
+                self.saveButton.isUserInteractionEnabled = true
+            } else {
+                self.saveButton.alpha = self.disabledAlpha
+                self.saveButton.isUserInteractionEnabled = false
+            }
+        }
+    }
+    
     private func resetVariables() {
         self.currentPage = 1
         self.images = []
@@ -107,7 +188,8 @@ extension SearchViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         let imageModel = images[indexPath.row]
-        cell.setup(imageModel)
+        let isSelected = selectedIndexPaths.contains(indexPath)
+        cell.setup(imageModel, isSelected: isSelected)
         cell.delegate = self
         return cell
     }
@@ -124,11 +206,23 @@ extension SearchViewController: UICollectionViewDelegate {
             searchImages(searchText: currentQuery, page: currentPage + 1)
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard inSelectMode else {
+            return
+        }
+        if selectedIndexPaths.contains(indexPath) {
+            selectedIndexPaths.removeAll(where: {$0 == indexPath})
+        } else {
+            selectedIndexPaths.append(indexPath)
+        }
+        collectionView.reloadItems(at: [indexPath])
+    }
 }
 
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let yourWidth = collectionView.bounds.width/4.0
+        let yourWidth = collectionView.bounds.width/CGFloat(countImagesInRow)
         let yourHeight = yourWidth
         
         return CGSize(width: yourWidth, height: yourHeight)
@@ -149,10 +243,13 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
 
 extension SearchViewController: ImageCollectionViewCellDelegate {
     func doubleTapCell(_ cell: ImageCollectionViewCell) {
+        guard inSelectMode == false else {
+            return
+        }
         guard let index = collectionView.indexPath(for: cell) else {
             return
         }
-        self.selectedIndexPath = index
+        self.doubleTappedIndexPath = index
         let vc = ViewModeViewController(images: self.images, selectedIndex: index, rootVC: self)
         RequestService.shared.stopAllTasks()
         self.navigationController?.pushViewController(vc, animated: true)
@@ -161,7 +258,7 @@ extension SearchViewController: ImageCollectionViewCellDelegate {
 
 extension SearchViewController: ZoomingViewController {
     func zoomingImageView(for transition: ZoomTransitioningDelegate) -> UIImageView? {
-        guard let indexPath = selectedIndexPath else {
+        guard let indexPath = doubleTappedIndexPath else {
             return nil
         }
         if let cell  = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {

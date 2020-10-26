@@ -45,17 +45,11 @@ class ViewModeCollectionViewCell: UICollectionViewCell {
     // MARK: - Public methods
     public func setup(_ imageModel: ImageURLs) {
         self.imageModel = imageModel
-        guard let thumbUrl: URL = URL(string: imageModel.thumb ) else {
-            return
-        }
-        guard let fullUrl: URL = URL(string: imageModel.regular ) else {
-            return
-        }
-        self.dataTask = RequestService.shared.loadImage(url: thumbUrl) { image in
+        self.dataTask = RequestService.shared.loadImage(urlString: imageModel.thumb) { image in
             self.lowImage = image
             self.updateImageView(lowImage: self.lowImage, highImage: self.highImage)
             self.stopTask()
-            self.dataTask = RequestService.shared.loadImage(url: fullUrl, completion: { (image) in
+            self.dataTask = RequestService.shared.loadImage(urlString: imageModel.regular, completion: { (image) in
                 self.highImage = image
                 self.updateImageView(lowImage: self.lowImage, highImage: self.highImage)
                 self.stopTask()
