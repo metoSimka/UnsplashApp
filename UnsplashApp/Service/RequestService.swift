@@ -138,6 +138,8 @@ class RequestService {
                         return
                     }
                     if useCache {
+                        let data = image.jpegData(compressionQuality: 1.0)
+                        ImageCache.shared.cache.setObject(image, forKey: nsURL, cost: data?.count ?? 0)
                         ImageCache.shared.cache.setObject(image, forKey: nsURL)
                     }
                     DispatchQueue.main.async {

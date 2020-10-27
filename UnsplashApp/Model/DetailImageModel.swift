@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 struct DetailImageModel {
-    var imageURLs: ImageURLs?
-    var thumbImage: UIImage?
-    var qualityImage: UIImage?
+    public var imageURLs: ImageURLs?
+    public var thumbImage: UIImage?
+    public var qualityImage: UIImage?
     
     static func initArray(fromURLs urls: [ImageURLs]) -> [DetailImageModel] {
         var detailImageArray: [DetailImageModel] = []
