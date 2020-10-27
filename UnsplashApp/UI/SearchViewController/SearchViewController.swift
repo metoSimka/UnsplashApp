@@ -23,14 +23,12 @@ class SearchViewController: UIViewController {
     
     // MARK: - Private constants
     private let maxPage = 100
-    static private let perPage = 12
     private let disabledAlpha: CGFloat = 0.3
     private let defaultAnimationTime: TimeInterval = 0.1
     private let countImagesInRow = 4
     private let zoomTransition = ZoomTransitioningDelegate()
 
     // MARK: - Private variables
-
     private var currentPage = 1
     private var images: [ImageURLs] = []
     private var currentQuery: String?
@@ -60,10 +58,6 @@ class SearchViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.delegate = self
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
     }
     
      // MARK: - IBActions
