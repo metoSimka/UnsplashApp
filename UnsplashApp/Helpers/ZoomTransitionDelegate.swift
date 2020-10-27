@@ -23,13 +23,16 @@ enum TransitionState {
 }
 
 class ZoomTransitioningDelegate: NSObject {
-    var transitionDuration = 0.5
-    var operation: UINavigationController.Operation = .none
-    private let zoomScale = CGFloat(15)
+    
+   
+    public var operation: UINavigationController.Operation = .none
+    
     private let backgroundScale = CGFloat(0.7)
+    private var transitionDuration = 0.5
     
     typealias ZoomingViews = (otherView: UIView?, imageView: UIView?)
-    func configureViews(for state: TransitionState, containerView: UIView, backgroundViewController: UIViewController, viewsInBackground: ZoomingViews, viewsInForeground: ZoomingViews?, snapshotViews: ZoomingViews) {
+    
+    private func configureViews(for state: TransitionState, containerView: UIView, backgroundViewController: UIViewController, viewsInBackground: ZoomingViews, viewsInForeground: ZoomingViews?, snapshotViews: ZoomingViews) {
         switch state {
         case .initial:
             backgroundViewController.view.transform = CGAffineTransform.identity
