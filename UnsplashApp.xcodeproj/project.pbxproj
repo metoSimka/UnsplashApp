@@ -126,12 +126,12 @@
 		A5532C68251A5C0200D9C715 /* UnsplashApp */ = {
 			isa = PBXGroup;
 			children = (
-				A5E91828253DFFDD002F5EC3 /* Helpers */,
-				A5E9181C253DE1CB002F5EC3 /* Model */,
-				A557F9A1251A7EC8002AD3B8 /* Service */,
 				A5532C8B251A76D800D9C715 /* Config */,
 				A5532C8A251A63BE00D9C715 /* CoreData */,
+				A5E91828253DFFDD002F5EC3 /* Helpers */,
+				A5E9181C253DE1CB002F5EC3 /* Model */,
 				A5532C8C251A76E500D9C715 /* Resources */,
+				A557F9A1251A7EC8002AD3B8 /* Service */,
 				A5532C8D251A76F300D9C715 /* UI */,
 			);
 			path = UnsplashApp;
@@ -140,10 +140,10 @@
 		A5532C8A251A63BE00D9C715 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				A5532C82251A626C00D9C715 /* Thumbnail+CoreDataClass.swift */,
-				A5532C83251A626C00D9C715 /* Thumbnail+CoreDataProperties.swift */,
 				A5532C84251A626C00D9C715 /* HResolution+CoreDataClass.swift */,
 				A5532C85251A626C00D9C715 /* HResolution+CoreDataProperties.swift */,
+				A5532C82251A626C00D9C715 /* Thumbnail+CoreDataClass.swift */,
+				A5532C83251A626C00D9C715 /* Thumbnail+CoreDataProperties.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -151,11 +151,11 @@
 		A5532C8B251A76D800D9C715 /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				A5532C80251A5CB300D9C715 /* SceneDelegate.swift */,
 				A5532C69251A5C0200D9C715 /* AppDelegate.swift */,
-				A5532C7A251A5C0200D9C715 /* Info.plist */,
-				A5532C72251A5C0200D9C715 /* UnsplashApp.xcdatamodeld */,
 				A5E91814253DDA34002F5EC3 /* Constants.swift */,
+				A5532C7A251A5C0200D9C715 /* Info.plist */,
+				A5532C80251A5CB300D9C715 /* SceneDelegate.swift */,
+				A5532C72251A5C0200D9C715 /* UnsplashApp.xcdatamodeld */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -163,8 +163,8 @@
 		A5532C8C251A76E500D9C715 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A5E91832253E01AB002F5EC3 /* Fonts */,
 				A5532C75251A5C0200D9C715 /* Assets.xcassets */,
+				A5E91832253E01AB002F5EC3 /* Fonts */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -172,13 +172,13 @@
 		A5532C8D251A76F300D9C715 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				A5E569EE254759020080899B /* PopupSaveImgeViewController */,
-				A585808525472244009AD1A8 /* LibraryViewController */,
-				A554483B2544651D00AF3248 /* VideModeViewController */,
-				A5532C8E251A772100D9C715 /* Main */,
-				A5544839254464CF00AF3248 /* SearchViewController */,
 				A55EB4F72547343000204D7F /* ImageCollectionViewCell.swift */,
+				A585808525472244009AD1A8 /* LibraryViewController */,
+				A5532C8E251A772100D9C715 /* Main */,
+				A5E569EE254759020080899B /* PopupSaveImgeViewController */,
 				A558005525486BA6004031DF /* SaveProcessingView.swift */,
+				A5544839254464CF00AF3248 /* SearchViewController */,
+				A554483B2544651D00AF3248 /* VideModeViewController */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -256,9 +256,9 @@
 		A5E9181C253DE1CB002F5EC3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A558005C25488CBD004031DF /* DetailImageModel.swift */,
 				A5E9181D253DE1DC002F5EC3 /* JsonResponseModels.swift */,
 				A55448322543493800AF3248 /* RequestTask.swift */,
-				A558005C25488CBD004031DF /* DetailImageModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -283,11 +283,11 @@
 		A5E91832253E01AB002F5EC3 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				A5E91833253E01AB002F5EC3 /* SFProText-Medium.ttf */,
-				A5E91834253E01AB002F5EC3 /* SFProText-Semibold.ttf */,
-				A5E91835253E01AB002F5EC3 /* SFProText-Regular.ttf */,
-				A5E91836253E01AB002F5EC3 /* SFProText-Light.ttf */,
 				A5E91837253E01AB002F5EC3 /* SFProText-Bold.ttf */,
+				A5E91836253E01AB002F5EC3 /* SFProText-Light.ttf */,
+				A5E91833253E01AB002F5EC3 /* SFProText-Medium.ttf */,
+				A5E91835253E01AB002F5EC3 /* SFProText-Regular.ttf */,
+				A5E91834253E01AB002F5EC3 /* SFProText-Semibold.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
