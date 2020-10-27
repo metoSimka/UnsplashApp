@@ -36,7 +36,7 @@ class SearchViewController: UIViewController {
     private var images: [ImageURLs] = []
     private var currentQuery: String?
     
-    private var doubleTappedIndexPath: IndexPath?
+    internal var doubleTappedIndexPath: IndexPath?
     
     private var inSelectMode = false
     private var selectedIndexPaths: [IndexPath] = []
@@ -100,9 +100,6 @@ class SearchViewController: UIViewController {
     }
     
     // MARK: - Public methods
-    public func syncSelectedIndexPath(indexPath: IndexPath) {
-        self.doubleTappedIndexPath = indexPath
-    }
 
     // MARK: - Private methods
     private func setupSelectButton() {
@@ -137,7 +134,6 @@ class SearchViewController: UIViewController {
                 self.present(alert, animated: true, completion: nil)
             }
         }
-        print(currentSaveCount," in ",total)
         saveProcessingView.updateLabel(text: "Saving \(currentSaveCount)/\(total)")
     }
 
@@ -284,7 +280,8 @@ extension SearchViewController: ImageCellDelegate {
             return
         }
         self.doubleTappedIndexPath = index
-        let vc = ViewModeViewController(images: self.images, selectedIndex: index, rootVC: self)
+        let detailImageModel = DetailImageModel.initArray(fromURLs: self.images)
+        let vc = DetailViewModeViewController(images: detailImageModel, selectedIndex: index, rootVC: self)
         RequestService.shared.stopAllTasks()
         self.navigationController?.pushViewController(vc, animated: true)
     }
@@ -381,7 +378,6 @@ extension SearchViewController: PopupSaveImageViewControllerDelegate {
                         }
                         CoreDataManager.shared.saveImage(thumbnailImage: thumbImage, fullimage: qualityImage, imageURLs: urls)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
-                            print("success saving")
                             count += 1
                             self.updateSaveProgress(currentSaveCount: count, total: self.selectedIndexPaths.count, errorCount: finishedWithError)
                         })

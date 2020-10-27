@@ -12,6 +12,7 @@ import UIKit
 
 
 @objc protocol ZoomingViewController {
+    var doubleTappedIndexPath: IndexPath? { get set }
     func zoomingImageView(for transition: ZoomTransitioningDelegate) -> UIImageView?
     func zoomingBackgroundView(for transiotion: ZoomTransitioningDelegate) -> UIView?
 }

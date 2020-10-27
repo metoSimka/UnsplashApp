@@ -19,10 +19,10 @@
 		A5532C91251A775D00D9C715 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5532C90251A775D00D9C715 /* MainViewController.swift */; };
 		A5532C93251A776D00D9C715 /* MainViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5532C92251A776D00D9C715 /* MainViewController.storyboard */; };
 		A55448332543493800AF3248 /* RequestTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55448322543493800AF3248 /* RequestTask.swift */; };
-		A5544843254465A500AF3248 /* ViewModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5544841254465A500AF3248 /* ViewModeViewController.swift */; };
-		A5544844254465A500AF3248 /* ViewModeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5544842254465A500AF3248 /* ViewModeViewController.xib */; };
-		A55448482544666700AF3248 /* ViewModeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55448462544666700AF3248 /* ViewModeCollectionViewCell.swift */; };
-		A55448492544666700AF3248 /* ViewModeCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A55448472544666700AF3248 /* ViewModeCollectionViewCell.xib */; };
+		A5544843254465A500AF3248 /* DetailViewModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5544841254465A500AF3248 /* DetailViewModeViewController.swift */; };
+		A5544844254465A500AF3248 /* DetailViewModeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5544842254465A500AF3248 /* DetailViewModeViewController.xib */; };
+		A55448482544666700AF3248 /* DetailViewModeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55448462544666700AF3248 /* DetailViewModeCollectionViewCell.swift */; };
+		A55448492544666700AF3248 /* DetailViewModeCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A55448472544666700AF3248 /* DetailViewModeCollectionViewCell.xib */; };
 		A554484D25446B6200AF3248 /* ZoomTransitionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A554484C25446B6200AF3248 /* ZoomTransitionDelegate.swift */; };
 		A55448512545A07100AF3248 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55448502545A07100AF3248 /* CoreDataManager.swift */; };
 		A557F9A5251A7EFA002AD3B8 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A557F9A4251A7EFA002AD3B8 /* DataManager.swift */; };
@@ -65,10 +65,10 @@
 		A5532C90251A775D00D9C715 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		A5532C92251A776D00D9C715 /* MainViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainViewController.storyboard; sourceTree = "<group>"; };
 		A55448322543493800AF3248 /* RequestTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestTask.swift; sourceTree = "<group>"; };
-		A5544841254465A500AF3248 /* ViewModeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModeViewController.swift; sourceTree = "<group>"; };
-		A5544842254465A500AF3248 /* ViewModeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewModeViewController.xib; sourceTree = "<group>"; };
-		A55448462544666700AF3248 /* ViewModeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModeCollectionViewCell.swift; sourceTree = "<group>"; };
-		A55448472544666700AF3248 /* ViewModeCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewModeCollectionViewCell.xib; sourceTree = "<group>"; };
+		A5544841254465A500AF3248 /* DetailViewModeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModeViewController.swift; sourceTree = "<group>"; };
+		A5544842254465A500AF3248 /* DetailViewModeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailViewModeViewController.xib; sourceTree = "<group>"; };
+		A55448462544666700AF3248 /* DetailViewModeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModeCollectionViewCell.swift; sourceTree = "<group>"; };
+		A55448472544666700AF3248 /* DetailViewModeCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailViewModeCollectionViewCell.xib; sourceTree = "<group>"; };
 		A554484C25446B6200AF3248 /* ZoomTransitionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomTransitionDelegate.swift; sourceTree = "<group>"; };
 		A55448502545A07100AF3248 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		A557F9A4251A7EFA002AD3B8 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
@@ -215,10 +215,10 @@
 		A554483B2544651D00AF3248 /* VideModeViewController */ = {
 			isa = PBXGroup;
 			children = (
-				A5544841254465A500AF3248 /* ViewModeViewController.swift */,
-				A5544842254465A500AF3248 /* ViewModeViewController.xib */,
-				A55448462544666700AF3248 /* ViewModeCollectionViewCell.swift */,
-				A55448472544666700AF3248 /* ViewModeCollectionViewCell.xib */,
+				A5544841254465A500AF3248 /* DetailViewModeViewController.swift */,
+				A5544842254465A500AF3248 /* DetailViewModeViewController.xib */,
+				A55448462544666700AF3248 /* DetailViewModeCollectionViewCell.swift */,
+				A55448472544666700AF3248 /* DetailViewModeCollectionViewCell.xib */,
 			);
 			path = VideModeViewController;
 			sourceTree = "<group>";
@@ -351,9 +351,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5532C79251A5C0200D9C715 /* LaunchScreen.storyboard in Resources */,
-				A5544844254465A500AF3248 /* ViewModeViewController.xib in Resources */,
+				A5544844254465A500AF3248 /* DetailViewModeViewController.xib in Resources */,
 				A55EB4F52547328D00204D7F /* LibraryImageCollectionViewCell.xib in Resources */,
-				A55448492544666700AF3248 /* ViewModeCollectionViewCell.xib in Resources */,
+				A55448492544666700AF3248 /* DetailViewModeCollectionViewCell.xib in Resources */,
 				A55EB50025474A3B00204D7F /* PopupSaveImageViewController.xib in Resources */,
 				A5532C93251A776D00D9C715 /* MainViewController.storyboard in Resources */,
 				A5E9183A253E01AB002F5EC3 /* SFProText-Regular.ttf in Resources */,
@@ -377,10 +377,10 @@
 			files = (
 				A5532C86251A626C00D9C715 /* Thumbnail+CoreDataClass.swift in Sources */,
 				A5E91819253DDF4A002F5EC3 /* SearchViewController.swift in Sources */,
-				A5544843254465A500AF3248 /* ViewModeViewController.swift in Sources */,
+				A5544843254465A500AF3248 /* DetailViewModeViewController.swift in Sources */,
 				A5532C87251A626C00D9C715 /* Thumbnail+CoreDataProperties.swift in Sources */,
 				A55448512545A07100AF3248 /* CoreDataManager.swift in Sources */,
-				A55448482544666700AF3248 /* ViewModeCollectionViewCell.swift in Sources */,
+				A55448482544666700AF3248 /* DetailViewModeCollectionViewCell.swift in Sources */,
 				A5532C6A251A5C0200D9C715 /* AppDelegate.swift in Sources */,
 				A554484D25446B6200AF3248 /* ZoomTransitionDelegate.swift in Sources */,
 				A55EB4FF25474A3B00204D7F /* PopupSaveImageViewController.swift in Sources */,

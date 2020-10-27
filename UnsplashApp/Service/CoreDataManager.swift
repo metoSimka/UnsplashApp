@@ -39,6 +39,16 @@ class CoreDataManager {
             completion(self.fetchedImages)
         }
     }
+    
+    public func deleteImages(thumbnailEntities: [Thumbnail]) {
+        for thumbnailEntity in thumbnailEntities {
+            if let hResolutionEntity = thumbnailEntity.hResolution {
+                managedContext?.delete(hResolutionEntity)
+            }
+            managedContext?.delete(thumbnailEntity)
+        }
+        try? managedContext?.save()
+    }
 
     public func prefetchImages(completion: (([Thumbnail]?)->Void)?) {
         CoreDataManager.shared.loadImages { (result) in

@@ -19,7 +19,7 @@ class LibraryViewController: UIViewController {
     private let disabledAlpha: CGFloat = 0.3
     private let countImagesInRow = 4
     
-    private var doubleTappedIndexPath: IndexPath?
+    internal var doubleTappedIndexPath: IndexPath?
     private var imageModel: [Thumbnail] = []
     private var selectedIndexPaths: [IndexPath] = []
     private var inSelectMode = false
@@ -43,7 +43,12 @@ class LibraryViewController: UIViewController {
     
     @IBAction func selectButtonTouched(_ sender: UIButton) {
         selectButton.isSelected = !selectButton.isSelected
-        inSelectMode = selectButton.isSelected
+        updateSelectState(selectButton.isSelected)
+    }
+    
+    private func updateSelectState(_ isSelected: Bool) {
+        inSelectMode = isSelected
+        selectButton.isSelected = isSelected
         updateSaveButton()
         selectedIndexPaths = []
         if inSelectMode == false {
@@ -62,7 +67,8 @@ class LibraryViewController: UIViewController {
             }
             UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
         }
-        let alert = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .alert)
+        self.updateSelectState(false)
+        let alert = UIAlertController(title: "Saved!", message: "Image has been saved to your photos.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
@@ -76,7 +82,17 @@ class LibraryViewController: UIViewController {
     }
     
     @IBAction func deleteButtonTouched(_ sender: UIButton) {
-        
+        var imagesForDelete: [Thumbnail] = []
+        for indexPath in selectedIndexPaths {
+            let enitity = imageModel[indexPath.row]
+            imagesForDelete.append(enitity)
+        }
+        for deletableImage in imagesForDelete {
+            self.imageModel.removeAll(where: {$0.url == deletableImage.url})
+        }
+        collectionView.deleteItems(at: selectedIndexPaths)
+        CoreDataManager.shared.deleteImages(thumbnailEntities: imagesForDelete)
+        selectedIndexPaths = []
     }
     
     public func fetchCoreDataImages() {
@@ -88,7 +104,7 @@ class LibraryViewController: UIViewController {
             self.collectionView.reloadData()
         }
     }
-    
+
     private func setupCollectionView() {
         collectionView.register( UINib(nibName: "LibraryImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LibraryImageCollectionViewCell")
         collectionView.dataSource = self
@@ -180,9 +196,10 @@ extension LibraryViewController: ImageCellDelegate {
             return
         }
         self.doubleTappedIndexPath = index
-//        let vc = ViewModeViewController(images: self.images, selectedIndex: index, rootVC: self)
-//        RequestService.shared.stopAllTasks()
-//        self.navigationController?.pushViewController(vc, animated: true)
+        let detailImageModel = DetailImageModel.initArray(fromThumbnailEntities: imageModel)
+        let vc = DetailViewModeViewController(images: detailImageModel, selectedIndex: index, rootVC: self)
+        self.navigationController?.delegate = self
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }
 
