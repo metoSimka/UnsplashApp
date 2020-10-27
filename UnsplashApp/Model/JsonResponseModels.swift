@@ -22,11 +22,34 @@ struct ImagePopularResponse: Decodable {
     let urls: ImageURLs
 }
 
+enum Quality: Int {
+    case thumbnail = 0
+    case small = 1
+    case regular = 2
+    case full = 3
+    case raw = 4
+}
+
 struct ImageURLs: Decodable, Equatable {
     let raw: String
     let full: String
     let regular: String
     let small: String
     let thumb: String
+    
+    func getUrl(quality: Quality) -> String {
+        switch quality {
+        case .thumbnail:
+            return self.thumb
+        case .small:
+            return self.small
+        case .regular:
+            return self.regular
+        case .full:
+            return self.full
+        case .raw:
+            return self.raw
+        }
+    }
 }
 

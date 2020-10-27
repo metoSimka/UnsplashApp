@@ -12,10 +12,14 @@ import CoreData
 class SearchViewController: UIViewController {
     
     // MARK: - Public constants
-    
+
     // MARK: - Public variables
 
     // MARK: - IBOutlets
+    
+    @IBOutlet weak var labelSaving: UILabel!
+    @IBOutlet weak var savingSpinnerContainer: UIView!
+    @IBOutlet weak var libraryPageButton: UIButton!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var selectButton: UIButton!
@@ -25,9 +29,10 @@ class SearchViewController: UIViewController {
     private let maxPage = 100
     static private let perPage = 12
     private let disabledAlpha: CGFloat = 0.3
-    private let defaultAnimationTime: TimeInterval = 0.2
+    private let defaultAnimationTime: TimeInterval = 0.1
     private let countImagesInRow = 4
-    
+    private let zoomTransition = ZoomTransitioningDelegate()
+
     // MARK: - Private variables
 
     private var currentPage = 1
@@ -42,7 +47,8 @@ class SearchViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        SaveImageService.shared.clearAllCoreData()
+        self.hideSavingSpinner()
+        textField.delegate = self
         setupSelectButton()
         setupCollectionView()
         RequestService.shared.addSearchTask(nil, currentPage: 1) { (imageDatas) in
@@ -51,24 +57,13 @@ class SearchViewController: UIViewController {
         updateSaveButton()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.delegate = self
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        SaveImageService.shared.loadImages { (fetched) in
-            var images: [UIImage] = []
-            guard let thumbnailList = fetched else {
-                return
-            }
-            for thumbnail in thumbnailList {
-                guard let data = thumbnail.imageData else {
-                    return
-                }
-                guard let image = UIImage(data: data) else {
-                    return
-                }
-                images.append(image)
-            }
-            print(images.count)
-        }
     }
     
      // MARK: - IBActions
@@ -78,37 +73,29 @@ class SearchViewController: UIViewController {
         RequestService.shared.stopAllTasks()
         searchImages(searchText: currentQuery, page: currentPage)
         self.collectionView.reloadData()
+        textField.resignFirstResponder()
     }
     
     @IBAction func selectButtonTouched(_ sender: UIButton) {
         selectButton.isSelected = !selectButton.isSelected
-        inSelectMode = selectButton.isSelected
+        switchSelectMode(bool: selectButton.isSelected)
+    }
+    
+    private func switchSelectMode(bool: Bool) {
+        inSelectMode = bool
         updateSaveButton()
         selectedIndexPaths = []
         if inSelectMode == false {
             self.collectionView.reloadData()
         }
     }
+
+    @IBAction func libraryPageTouched(_ sender: UIButton) {
+        showLibrary()
+    }
     
     @IBAction func saveSelectedImages(_ sender: UIButton) {
-
-        for indexPath in selectedIndexPaths {
-            let urls = images[indexPath.row]
-            RequestService.shared.loadImage(urlString: urls.thumb) { (imageThumb) in
-                guard let imageThumbnail = imageThumb else {
-                    return
-                }
-                RequestService.shared.loadImage(urlString: urls.regular) { (imageReg) in
-                    guard let imageRegular = imageReg else {
-                        return
-                    }
-                    SaveImageService.shared.prepareImageForSaving(thumbImage: imageThumbnail, thumbUrl: urls.thumb, highResolutionImage: imageRegular)
-                    DispatchQueue.main.async {
-                        print("Image saved")
-                    }
-                }
-            }
-        }
+        showPopupQualityVC()
     }
     
     // MARK: - Public methods
@@ -125,7 +112,7 @@ class SearchViewController: UIViewController {
 
     private func updateSaveButton() {
         UIView.animate(withDuration: defaultAnimationTime) {
-            if self.inSelectMode {
+            if self.inSelectMode, self.selectedIndexPaths.count > 0 {
                 self.saveButton.alpha = 1
                 self.saveButton.isUserInteractionEnabled = true
             } else {
@@ -133,6 +120,54 @@ class SearchViewController: UIViewController {
                 self.saveButton.isUserInteractionEnabled = false
             }
         }
+    }
+  
+    private func updateSaveProgress(currentSaveCount: Int, total: Int, errorCount: Int) {
+        if currentSaveCount >= total {
+            self.hideSavingSpinner()
+//            CoreDataManager.shared.prefetchImages()
+            self.switchSelectMode(bool: false)
+            self.selectButton.isSelected = false
+            labelSaving.text = "Saving"
+            if errorCount > 0 {
+                let alert = UIAlertController(title: "Warning", message: "Failed to download and save \(errorCount) images. Total saved: \(total - errorCount)", preferredStyle: .alert)
+                let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                alert.addAction(action)
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        print(currentSaveCount," in ",total)
+        labelSaving.text = "Saving \(currentSaveCount)/\(total)"
+    }
+
+    private func showPopupQualityVC() {
+        let vc = PopupSaveImageViewController()
+        vc.delegate = self
+        vc.navigationController?.delegate = nil
+        vc.modalPresentationStyle = .overFullScreen
+        vc.modalTransitionStyle = .coverVertical
+        self.present(vc, animated: true)
+    }
+    
+    private func showSavingSpinner() {
+        self.view.isUserInteractionEnabled = false
+        UIView.animate(withDuration: defaultAnimationTime) {
+            self.savingSpinnerContainer.alpha = 1
+        }
+    }
+    
+    private func hideSavingSpinner() {
+        self.view.isUserInteractionEnabled = true
+        UIView.animate(withDuration: defaultAnimationTime) {
+            self.savingSpinnerContainer.alpha = 0
+        }
+    }
+
+    private func showLibrary() {
+        let vc = LibraryViewController(nibName: "LibraryViewController", bundle: nil)
+        vc.modalPresentationStyle = .fullScreen
+        self.navigationController?.delegate = nil
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     private func resetVariables() {
@@ -171,7 +206,7 @@ class SearchViewController: UIViewController {
     }
 
     private func setupCollectionView() {
-        collectionView.register( UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
+        collectionView.register( UINib(nibName: "SearchImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "SearchImageCollectionViewCell")
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -184,7 +219,7 @@ extension SearchViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as?  ImageCollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchImageCollectionViewCell", for: indexPath) as?  SearchImageCollectionViewCell else {
             return UICollectionViewCell()
         }
         let imageModel = images[indexPath.row]
@@ -211,12 +246,17 @@ extension SearchViewController: UICollectionViewDelegate {
         guard inSelectMode else {
             return
         }
-        if selectedIndexPaths.contains(indexPath) {
-            selectedIndexPaths.removeAll(where: {$0 == indexPath})
-        } else {
-            selectedIndexPaths.append(indexPath)
+        for i in 0...200 {
+            let indexPathx = IndexPath(row: i, section: 0)
+            self.selectedIndexPaths.append(indexPathx)
         }
+//        if selectedIndexPaths.contains(indexPath) {
+//            selectedIndexPaths.removeAll(where: {$0 == indexPath})
+//        } else {
+//            selectedIndexPaths.append(indexPath)
+//        }
         collectionView.reloadItems(at: [indexPath])
+        updateSaveButton()
     }
 }
 
@@ -241,7 +281,7 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension SearchViewController: ImageCollectionViewCellDelegate {
+extension SearchViewController: ImageCellDelegate {
     func doubleTapCell(_ cell: ImageCollectionViewCell) {
         guard inSelectMode == false else {
             return
@@ -261,7 +301,7 @@ extension SearchViewController: ZoomingViewController {
         guard let indexPath = doubleTappedIndexPath else {
             return nil
         }
-        if let cell  = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+        if let cell  = collectionView.cellForItem(at: indexPath) as? SearchImageCollectionViewCell {
             return cell.imageView
         } else {
             let visibleCell = collectionView.visibleCells
@@ -289,5 +329,62 @@ extension SearchViewController: ZoomingViewController {
     
     func zoomingBackgroundView(for transiotion: ZoomTransitioningDelegate) -> UIView? {
         return nil
+    }
+}
+
+extension SearchViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
+
+extension SearchViewController: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        zoomTransition.operation = operation
+        return zoomTransition
+    }
+}
+
+extension SearchViewController: PopupSaveImageViewControllerDelegate {
+    func PopupSaveImageViewControllerClosed() {
+        self.navigationController?.delegate = self
+    }
+    
+    func saveWithQuality(quality: Quality) {
+        showSavingSpinner()
+        var count = 0
+        var finishedWithError: Int = 0
+        self.updateSaveProgress(currentSaveCount: count, total: self.selectedIndexPaths.count, errorCount: finishedWithError)
+        for indexPath in self.selectedIndexPaths {
+            let urls = self.images[indexPath.row]
+            let ulr = urls.getUrl(quality: quality)
+            RequestService.shared.loadImage(urlString: urls.thumb) { (thumbnailResult) in
+                guard let thumbImage = thumbnailResult else {
+                    DispatchQueue.main.async {
+                        finishedWithError += 1
+                        count += 1
+                        self.updateSaveProgress(currentSaveCount: count, total: self.selectedIndexPaths.count, errorCount: finishedWithError)
+                    }
+                    return
+                }
+                RequestService.shared.loadImage(urlString: ulr, useCache: false) { (qualityResult) in
+                    guard let qualityImage = qualityResult else {
+                        DispatchQueue.main.async {
+                            finishedWithError += 1
+                            count += 1
+                            self.updateSaveProgress(currentSaveCount: count, total: self.selectedIndexPaths.count, errorCount: finishedWithError)
+                        }
+                        return
+                    }
+                    CoreDataManager.shared.saveImage(thumbnailImage: thumbImage, fullimage: qualityImage, imageURLs: urls)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+                        print("success saving")
+                        count += 1
+                        self.updateSaveProgress(currentSaveCount: count, total: self.selectedIndexPaths.count, errorCount: finishedWithError)
+                    })
+                }
+            }
+        }
     }
 }

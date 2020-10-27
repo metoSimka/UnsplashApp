@@ -17,7 +17,7 @@ extension Thumbnail {
         return NSFetchRequest<Thumbnail>(entityName: "Thumbnail")
     }
 
-    @NSManaged public var id: Double
+    @NSManaged public var url: String
     @NSManaged public var imageData: Data?
     @NSManaged public var hResolution: HResolution?
 

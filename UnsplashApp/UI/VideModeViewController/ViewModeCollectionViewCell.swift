@@ -8,14 +8,8 @@
 
 import UIKit
 
-protocol ViewModeCollectionViewCellDelegate: class {
-    func doubleTapCell(cell: ViewModeCollectionViewCell)
-}
+class ViewModeCollectionViewCell: ImageCollectionViewCell {
 
-class ViewModeCollectionViewCell: UICollectionViewCell {
-
-    weak var delegate: ViewModeCollectionViewCellDelegate?
-    
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var spinner: UIActivityIndicatorView!
     
@@ -27,7 +21,6 @@ class ViewModeCollectionViewCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        addDoubleTap()
         updateImageView(lowImage: lowImage, highImage: highImage)
     }
     
@@ -45,7 +38,10 @@ class ViewModeCollectionViewCell: UICollectionViewCell {
     // MARK: - Public methods
     public func setup(_ imageModel: ImageURLs) {
         self.imageModel = imageModel
-        self.dataTask = RequestService.shared.loadImage(urlString: imageModel.thumb) { image in
+        self.dataTask = RequestService.shared.loadImage(urlString: imageModel.thumb) { result in
+            guard let image = result else {
+                return
+            }
             self.lowImage = image
             self.updateImageView(lowImage: self.lowImage, highImage: self.highImage)
             self.stopTask()
@@ -74,15 +70,5 @@ class ViewModeCollectionViewCell: UICollectionViewCell {
             self.imageView.image = nil
             spinner.startAnimating()
         }
-    }
-    
-    private func addDoubleTap() {
-        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTapCell))
-        doubleTap.numberOfTapsRequired = 2
-        self.addGestureRecognizer(doubleTap)
-    }
-    
-    @objc private func doubleTapCell() {
-        self.delegate?.doubleTapCell(cell: self)
     }
 }

@@ -9,10 +9,11 @@
 import UIKit
 
 class ViewModeViewController: UIViewController {
-    
+
     private var images: [ImageURLs]
     private var currentIndex: IndexPath
     private var rootVC: UIViewController
+    private let zoomTransition = ZoomTransitioningDelegate()
 
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var imageView: UIImageView!
@@ -40,6 +41,7 @@ class ViewModeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.delegate = self
         self.collectionView.scrollToItem(at: currentIndex, at: .centeredHorizontally, animated: false)
     }
     
@@ -108,8 +110,8 @@ extension ViewModeViewController: ZoomingViewController {
     }
 }
 
-extension ViewModeViewController: ViewModeCollectionViewCellDelegate {
-    func doubleTapCell(cell: ViewModeCollectionViewCell) {
+extension ViewModeViewController: ImageCellDelegate {
+    func doubleTapCell(_ cell: ImageCollectionViewCell) {
         guard let index = collectionView.indexPath(for: cell) else {
             return
         }
@@ -119,5 +121,12 @@ extension ViewModeViewController: ViewModeCollectionViewCellDelegate {
             searchVC.syncSelectedIndexPath(indexPath: currentIndex)
         }
         navigationController?.popViewController(animated: true)
+    }
+}
+
+extension ViewModeViewController: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.zoomTransition.operation = operation
+        return zoomTransition
     }
 }

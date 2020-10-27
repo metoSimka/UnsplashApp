@@ -1,5 +1,5 @@
 //
-//  ImageCollectionViewCell.swift
+//  SearchImageCollectionViewCell.swift
 //  UnsplashApp
 //
 //  Created by metoSimka on 19.10.2020.
@@ -8,14 +8,7 @@
 
 import UIKit
 
-protocol ImageCollectionViewCellDelegate: class {
-    func doubleTapCell(_ cell: ImageCollectionViewCell)
-}
-
-class ImageCollectionViewCell: UICollectionViewCell {
-    
-    // MARK: - Public constants
-    weak var delegate: ImageCollectionViewCellDelegate?
+class SearchImageCollectionViewCell: ImageCollectionViewCell {
     
     // MARK: - Public variables
 
@@ -25,8 +18,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var selectionMask: UIView!
     
     // MARK: - Private constants
-    private let animationTime: TimeInterval = 0.1
-    
+
     // MARK: - Private variables
     private var lowImage: UIImage?
     private var dataTask: URLSessionDataTask?
@@ -47,7 +39,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        addDoubleTap()
     }
         
     // MARK: - IBActions
@@ -56,7 +47,10 @@ class ImageCollectionViewCell: UICollectionViewCell {
     public func setup(_ imageModel: ImageURLs, isSelected: Bool) {
         updateSelectedState(isSelected: isSelected)
         self.imageModel = imageModel
-        self.dataTask = RequestService.shared.loadImage(urlString: imageModel.thumb) { image in
+        self.dataTask = RequestService.shared.loadImage(urlString: imageModel.thumb) { result  in
+            guard let image = result else {
+                return
+            }
             self.lowImage = image
             self.updateImageView(lowImage: self.lowImage)
             self.stopTask()
@@ -75,16 +69,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
     private func stopTask() {
         self.dataTask?.cancel()
         self.dataTask = nil
-    }
-
-    private func addDoubleTap() {
-        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTapCell))
-        doubleTap.numberOfTapsRequired = 2
-        self.addGestureRecognizer(doubleTap)
-    }
-    
-    @objc private func doubleTapCell() {
-        self.delegate?.doubleTapCell(self)
     }
 
     private func updateImageView(lowImage: UIImage?) {

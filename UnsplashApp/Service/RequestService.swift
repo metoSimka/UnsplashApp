@@ -94,6 +94,8 @@ class RequestService {
                         return result.urls
                     }
                     completion(images, error)
+                } else {
+                    print(String(data: data, encoding: .utf8))
                 }
             }
         })
@@ -109,12 +111,14 @@ class RequestService {
         isDownloading = true
         self.taskQueue.first?.task.resume()
     }
-//    https://images.unsplash.com/photo-1601758125997-67e236238ab0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjE3NTc3N30
-    @discardableResult func loadImage(urlString: String, completion: @escaping(UIImage?) -> Void) -> URLSessionDataTask? {
+    
+    @discardableResult func loadImage(urlString: String, useCache: Bool = true, completion: @escaping(UIImage?) -> Void) -> URLSessionDataTask? {
         guard let url = URL(string: urlString) else {
+            completion(nil)
             return nil
         }
         guard let nsURL = url.absoluteString as NSString? else {
+            completion(nil)
             return nil
         }
         if let imageFromCache = ImageCache.shared.cache.object(forKey: nsURL) {
@@ -124,12 +128,16 @@ class RequestService {
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
                 do {
                     guard let data = data else {
+                        completion(nil)
                         return
                     }
                     guard let image = UIImage(data: data) else {
+                        completion(nil)
                         return
                     }
-                    ImageCache.shared.cache.setObject(image, forKey: nsURL)
+                    if useCache {
+                        ImageCache.shared.cache.setObject(image, forKey: nsURL)
+                    }
                     DispatchQueue.main.async {
                         completion(image)
                     }

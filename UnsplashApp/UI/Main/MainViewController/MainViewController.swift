@@ -20,7 +20,5 @@ class MainViewController: UIViewController {
         self.navigationController?.hidesBottomBarWhenPushed = true
         let vc = SearchViewController(nibName: "SearchViewController", bundle: nil)
         self.navigationController?.pushViewController(vc, animated: false)
-//        self.present(vc, animated: false, completion: nil)
-//        openAuthorizationViewController()
     }
 }

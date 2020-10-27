@@ -5,12 +5,12 @@
         <relationship name="thumbnail" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Thumbnail" inverseName="hResolution" inverseEntity="Thumbnail"/>
     </entity>
     <entity name="Thumbnail" representedClassName="Thumbnail" syncable="YES">
-        <attribute name="id" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="imageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="url" optional="YES" attributeType="String"/>
         <relationship name="hResolution" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HResolution" inverseName="thumbnail" inverseEntity="HResolution"/>
     </entity>
     <elements>
         <element name="HResolution" positionX="-511" positionY="-68" width="128" height="73"/>
-        <element name="Thumbnail" positionX="-121" positionY="-31" width="128" height="88"/>
+        <element name="Thumbnail" positionX="-495" positionY="-54" width="128" height="88"/>
     </elements>
 </model>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="LibraryImageCollectionViewCell" customModule="UnsplashApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="199" height="208"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="199" height="208"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="261-vc-fso">
+                        <rect key="frame" x="0.0" y="0.0" width="199" height="208"/>
+                    </imageView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RFV-zc-kUS">
+                        <rect key="frame" x="0.0" y="0.0" width="199" height="208"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.50428261959999998" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="636-qN-pIO">
+                        <rect key="frame" x="89" y="94" width="20" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    </activityIndicatorView>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="261-vc-fso" secondAttribute="trailing" id="1EA-Gx-lZh"/>
+                <constraint firstItem="261-vc-fso" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="9nk-Kg-FBA"/>
+                <constraint firstAttribute="bottom" secondItem="RFV-zc-kUS" secondAttribute="bottom" id="HDu-Az-37o"/>
+                <constraint firstAttribute="bottom" secondItem="261-vc-fso" secondAttribute="bottom" id="Im9-fz-8N7"/>
+                <constraint firstAttribute="trailing" secondItem="RFV-zc-kUS" secondAttribute="trailing" id="YSv-vP-gcl"/>
+                <constraint firstItem="261-vc-fso" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="cWy-Le-mM1"/>
+                <constraint firstItem="RFV-zc-kUS" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="eZN-e6-nWv"/>
+                <constraint firstItem="RFV-zc-kUS" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="vkz-IH-FqE"/>
+            </constraints>
+            <size key="customSize" width="199" height="208"/>
+            <connections>
+                <outlet property="imageView" destination="261-vc-fso" id="ciI-Er-554"/>
+                <outlet property="selectionMask" destination="RFV-zc-kUS" id="GWD-Ri-0lo"/>
+                <outlet property="spinner" destination="636-qN-pIO" id="4Rz-Qu-DNp"/>
+            </connections>
+            <point key="canvasLocation" x="148.55072463768118" y="156.69642857142856"/>
+        </collectionViewCell>
+    </objects>
+</document>
