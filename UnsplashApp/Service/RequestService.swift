@@ -13,9 +13,11 @@ class ExampleClass {
 }
 
 class RequestService {
+    
     // MARK: - Public constants
     
     static let shared = RequestService()
+    
     // MARK: - Public variables
     public var isDownloading = false
     
@@ -112,7 +114,7 @@ class RequestService {
         self.taskQueue.first?.task.resume()
     }
     
-    @discardableResult func loadImage(urlString: String, useCache: Bool = true, completion: @escaping(UIImage?) -> Void) -> URLSessionDataTask? {
+    @discardableResult public func loadImage(urlString: String, useCache: Bool = true, completion: @escaping(UIImage?) -> Void) -> URLSessionDataTask? {
         guard let url = URL(string: urlString) else {
             completion(nil)
             return nil

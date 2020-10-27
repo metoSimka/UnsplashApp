@@ -8,50 +8,26 @@
 
 import UIKit
 
-struct DetailImageModel {
-    var imageURLs: ImageURLs?
-    var thumbImage: UIImage?
-    var qualityImage: UIImage?
-    
-    static func initArray(fromURLs urls: [ImageURLs]) -> [DetailImageModel] {
-        var detailImageArray: [DetailImageModel] = []
-        for url in urls {
-            let detailImage = DetailImageModel(imageURLs: url, thumbImage: nil, qualityImage: nil)
-            detailImageArray.append(detailImage)
-        }
-        return detailImageArray
-    }
-    
-    static func initArray(fromThumbnailEntities entities: [Thumbnail]) -> [DetailImageModel] {
-        var detailImageArray: [DetailImageModel] = []
-        for entity in entities {
-            var thumbImage: UIImage?
-            var qualityImage: UIImage?
-            if let thumbImageData = entity.imageData {
-                thumbImage = UIImage(data: thumbImageData)
-            }
-            if let qualityImageData = entity.hResolution?.imageData {
-                qualityImage = UIImage(data: qualityImageData)
-            }
-            
-            let detailImage = DetailImageModel(imageURLs: nil, thumbImage: thumbImage, qualityImage: qualityImage)
-            detailImageArray.append(detailImage)
-        }
-        return detailImageArray
-    }
-}
-
 class DetailViewModeViewController: UIViewController {
 
-    private var images: [DetailImageModel] = []
-    private var currentIndex: IndexPath
-    private var rootVC: UIViewController
-    private let zoomTransition = ZoomTransitioningDelegate()
+    // MARK: - Public constants
+    
+    // MARK: - Public variables
     internal var doubleTappedIndexPath: IndexPath?
     
+    // MARK: - IBOutlets
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var imageView: UIImageView!
     
+    // MARK: - Private constants
+    private let zoomTransition = ZoomTransitioningDelegate()
+    
+    // MARK: - Private variables
+    private var images: [DetailImageModel] = []
+    private var currentIndex: IndexPath
+    private var rootVC: UIViewController
+
+    // MARK: - Lifecycle
     init(images: [DetailImageModel], selectedIndex: IndexPath, rootVC: UIViewController) {
         self.images = images
         self.currentIndex = selectedIndex
@@ -85,7 +61,11 @@ class DetailViewModeViewController: UIViewController {
         imageView.isHidden = true
         self.collectionView.isHidden = false
     }
+    // MARK: - IBActions
     
+    // MARK: - Public methods
+    
+    // MARK: - Private methods
     private func setupCollectionView() {
         collectionView.register( UINib(nibName: "DetailViewModeCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "DetailViewModeCollectionViewCell")
         collectionView.dataSource = self
@@ -93,6 +73,7 @@ class DetailViewModeViewController: UIViewController {
     }
 }
 
+// MARK: - Protocol Conformance
 extension DetailViewModeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return images.count

@@ -9,7 +9,13 @@
 import UIKit
 
 class LibraryViewController: UIViewController {
-
+    // MARK: - Public constants
+    // MARK: - Public variables
+    // MARK: - IBOutlets
+    // MARK: - Private constants
+    // MARK: - Private variables
+    
+  
     @IBOutlet weak var selectButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var delete: UIButton!
@@ -25,6 +31,7 @@ class LibraryViewController: UIViewController {
     private var inSelectMode = false
     private let zoomTransition = ZoomTransitioningDelegate()
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         CoreDataManager.shared.getPrefetchedImages { (images) in
@@ -35,7 +42,7 @@ class LibraryViewController: UIViewController {
         setupCollectionView()
         setupSelectButton()
     }
-    
+    // MARK: - IBActions
     @IBAction func back(_ sender: UIButton) {
         self.navigationController?.delegate = nil
         self.navigationController?.popViewController(animated: true)
@@ -45,17 +52,7 @@ class LibraryViewController: UIViewController {
         selectButton.isSelected = !selectButton.isSelected
         updateSelectState(selectButton.isSelected)
     }
-    
-    private func updateSelectState(_ isSelected: Bool) {
-        inSelectMode = isSelected
-        selectButton.isSelected = isSelected
-        updateSaveButton()
-        selectedIndexPaths = []
-        if inSelectMode == false {
-            self.collectionView.reloadData()
-        }
-    }
-    
+
     @IBAction func saveButtonTouched(_ sender: UIButton) {
         for indexPath in selectedIndexPaths {
             let thumbnailEnitity = imageModel[indexPath.row]
@@ -72,15 +69,7 @@ class LibraryViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
-    
-    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
-        if let error = error {
-            let alert = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
-        }
-    }
-    
+
     @IBAction func deleteButtonTouched(_ sender: UIButton) {
         var imagesForDelete: [Thumbnail] = []
         for indexPath in selectedIndexPaths {
@@ -95,13 +84,33 @@ class LibraryViewController: UIViewController {
         selectedIndexPaths = []
     }
     
+    // MARK: - Public methods
     public func fetchCoreDataImages() {
-        CoreDataManager.shared.loadImages { (result) in
+        CoreDataManager.shared.prefetchImages { (result) in
             guard let images = result else {
                 return
             }
             self.imageModel = images
             self.collectionView.reloadData()
+        }
+    }
+
+    // MARK: - Private methods
+    private func updateSelectState(_ isSelected: Bool) {
+        inSelectMode = isSelected
+        selectButton.isSelected = isSelected
+        updateSaveButton()
+        selectedIndexPaths = []
+        if inSelectMode == false {
+            self.collectionView.reloadData()
+        }
+    }
+    
+    @objc private func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            let alert = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
         }
     }
 
@@ -130,6 +139,7 @@ class LibraryViewController: UIViewController {
     }
 }
 
+// MARK: - Protocol Conformance
 extension LibraryViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return imageModel.count
