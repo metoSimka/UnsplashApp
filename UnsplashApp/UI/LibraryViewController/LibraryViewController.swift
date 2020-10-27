@@ -65,7 +65,7 @@ class LibraryViewController: UIViewController {
             UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
         }
         self.updateSelectState(false)
-        let alert = UIAlertController(title: "Saved!", message: "Image has been saved to your photos.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Saved!", message: "Images has been saved to your photos.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
