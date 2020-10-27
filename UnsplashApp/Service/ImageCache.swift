@@ -14,7 +14,9 @@ class ImageCache {
     
     let cache = NSCache<NSString, UIImage>()
     
-    private init() {
+    let memoryLimit = 1024 * 1024 * 300 // 300 MB
     
+    private init() {
+        self.cache.totalCostLimit = memoryLimit
     }
 }

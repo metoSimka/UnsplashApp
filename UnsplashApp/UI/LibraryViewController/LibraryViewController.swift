@@ -10,11 +10,6 @@ import UIKit
 
 class LibraryViewController: UIViewController {
 
-    struct LibraryImage {
-        var thumbImage: UIImage
-        var fullImage: UIImage
-    }
-    
     @IBOutlet weak var selectButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var delete: UIButton!
@@ -25,7 +20,6 @@ class LibraryViewController: UIViewController {
     private let countImagesInRow = 4
     
     private var doubleTappedIndexPath: IndexPath?
-    private var images: [LibraryImage] = []
     private var imageModel: [Thumbnail] = []
     private var selectedIndexPaths: [IndexPath] = []
     private var inSelectMode = false
@@ -33,40 +27,13 @@ class LibraryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        CoreDataManager.shared.getPrefetchedImages { (images) in
+            self.imageModel = images
+        }
+        fetchCoreDataImages()
         self.navigationController?.delegate = self
         setupCollectionView()
         setupSelectButton()
-        
-        CoreDataManager.shared.loadImages { (result) in
-            self.imageModel = result ?? []
-            self.collectionView.reloadData()
-            return
-            guard let thumbnailEntity = result else {
-                return
-            }
-            var libImages: [LibraryImage] = []
-            for entity in thumbnailEntity {
-                guard let thumbnailImageData = entity.imageData else {
-                    continue
-                }
-                guard let fullEntity = entity.hResolution else {
-                    continue
-                }
-                guard let fullImageData = fullEntity.imageData else {
-                    continue
-                }
-                guard let thumbnailImage = UIImage(data: thumbnailImageData) else {
-                    continue
-                }
-                guard let fullImage = UIImage(data: fullImageData) else {
-                    continue
-                }
-                let libImage = LibraryImage(thumbImage: thumbnailImage, fullImage: fullImage)
-                libImages.append(libImage)
-            }
-            self.images = libImages
-            self.collectionView.reloadData()
-        }
     }
     
     @IBAction func back(_ sender: UIButton) {
@@ -86,7 +53,13 @@ class LibraryViewController: UIViewController {
     
     @IBAction func saveButtonTouched(_ sender: UIButton) {
         for indexPath in selectedIndexPaths {
-            let image = images[indexPath.row].fullImage
+            let thumbnailEnitity = imageModel[indexPath.row]
+            guard let data = thumbnailEnitity.hResolution?.imageData else {
+                continue
+            }
+            guard let image = UIImage(data: data) else {
+                continue
+            }
             UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
         }
         let alert = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .alert)
@@ -104,6 +77,16 @@ class LibraryViewController: UIViewController {
     
     @IBAction func deleteButtonTouched(_ sender: UIButton) {
         
+    }
+    
+    public func fetchCoreDataImages() {
+        CoreDataManager.shared.loadImages { (result) in
+            guard let images = result else {
+                return
+            }
+            self.imageModel = images
+            self.collectionView.reloadData()
+        }
     }
     
     private func setupCollectionView() {

@@ -44,7 +44,7 @@
                     </connections>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Clh-IW-dkH">
-                    <rect key="frame" x="16" y="152" width="288" height="264.5"/>
+                    <rect key="frame" x="16" y="161.5" width="288" height="245.5"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose image quality to save" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="giQ-9F-5F5">
                             <rect key="frame" x="44.5" y="16" width="199.5" height="43"/>
@@ -52,14 +52,14 @@
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Attension: the higher quality may take a longer time. Thumbnail image will be saved instantly" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pSd-bT-Qea">
-                            <rect key="frame" x="19.5" y="67" width="249" height="57.5"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Attention: the higher quality may take a longer time" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pSd-bT-Qea" userLabel="Attension: the higher quality may take a longer time.">
+                            <rect key="frame" x="21" y="67" width="246.5" height="38.5"/>
                             <fontDescription key="fontDescription" name="SFProText-Light" family="SF Pro Text" pointSize="16"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="BMs-GJ-juL">
-                            <rect key="frame" x="16" y="140.5" width="256" height="28"/>
+                            <rect key="frame" x="16" y="121.5" width="256" height="28"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TtT-Q3-eJ2">
                                     <rect key="frame" x="0.0" y="0.0" width="120" height="28"/>
@@ -117,7 +117,7 @@
                             </constraints>
                         </stackView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XK6-20-epr">
-                            <rect key="frame" x="112" y="220.5" width="64" height="28"/>
+                            <rect key="frame" x="112" y="201.5" width="64" height="28"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="64" id="5pO-74-eyZ"/>
                                 <constraint firstAttribute="height" constant="28" id="7Ct-Ra-8Am"/>
@@ -142,7 +142,7 @@
                             </connections>
                         </button>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="9Ca-Wc-7aN">
-                            <rect key="frame" x="16" y="176.5" width="256" height="28"/>
+                            <rect key="frame" x="16" y="157.5" width="256" height="28"/>
                             <subviews>
                                 <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XMp-Ex-kEv">
                                     <rect key="frame" x="0.0" y="0.0" width="74.5" height="28"/>

@@ -16,9 +16,6 @@ class SearchViewController: UIViewController {
     // MARK: - Public variables
 
     // MARK: - IBOutlets
-    
-    @IBOutlet weak var labelSaving: UILabel!
-    @IBOutlet weak var savingSpinnerContainer: UIView!
     @IBOutlet weak var libraryPageButton: UIButton!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
@@ -44,6 +41,8 @@ class SearchViewController: UIViewController {
     private var inSelectMode = false
     private var selectedIndexPaths: [IndexPath] = []
     
+    private var saveProcessingView = SaveProcessingView()
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,6 +54,8 @@ class SearchViewController: UIViewController {
             self.updateImages(imageDatas)
         }
         updateSaveButton()
+        saveProcessingView.addSelf(to: self.view)
+        saveProcessingView.contentView?.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -125,10 +126,10 @@ class SearchViewController: UIViewController {
     private func updateSaveProgress(currentSaveCount: Int, total: Int, errorCount: Int) {
         if currentSaveCount >= total {
             self.hideSavingSpinner()
-//            CoreDataManager.shared.prefetchImages()
             self.switchSelectMode(bool: false)
             self.selectButton.isSelected = false
-            labelSaving.text = "Saving"
+            CoreDataManager.shared.prefetchImages(completion: nil)
+            saveProcessingView.updateLabel(text: "Saving")
             if errorCount > 0 {
                 let alert = UIAlertController(title: "Warning", message: "Failed to download and save \(errorCount) images. Total saved: \(total - errorCount)", preferredStyle: .alert)
                 let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
@@ -137,7 +138,7 @@ class SearchViewController: UIViewController {
             }
         }
         print(currentSaveCount," in ",total)
-        labelSaving.text = "Saving \(currentSaveCount)/\(total)"
+        saveProcessingView.updateLabel(text: "Saving \(currentSaveCount)/\(total)")
     }
 
     private func showPopupQualityVC() {
@@ -151,16 +152,13 @@ class SearchViewController: UIViewController {
     
     private func showSavingSpinner() {
         self.view.isUserInteractionEnabled = false
-        UIView.animate(withDuration: defaultAnimationTime) {
-            self.savingSpinnerContainer.alpha = 1
-        }
+        self.saveProcessingView.contentView?.isHidden = false
+        
     }
     
     private func hideSavingSpinner() {
         self.view.isUserInteractionEnabled = true
-        UIView.animate(withDuration: defaultAnimationTime) {
-            self.savingSpinnerContainer.alpha = 0
-        }
+        self.saveProcessingView.contentView?.isHidden = true
     }
 
     private func showLibrary() {
@@ -246,15 +244,11 @@ extension SearchViewController: UICollectionViewDelegate {
         guard inSelectMode else {
             return
         }
-        for i in 0...200 {
-            let indexPathx = IndexPath(row: i, section: 0)
-            self.selectedIndexPaths.append(indexPathx)
+        if selectedIndexPaths.contains(indexPath) {
+            selectedIndexPaths.removeAll(where: {$0 == indexPath})
+        } else {
+            selectedIndexPaths.append(indexPath)
         }
-//        if selectedIndexPaths.contains(indexPath) {
-//            selectedIndexPaths.removeAll(where: {$0 == indexPath})
-//        } else {
-//            selectedIndexPaths.append(indexPath)
-//        }
         collectionView.reloadItems(at: [indexPath])
         updateSaveButton()
     }
@@ -359,17 +353,16 @@ extension SearchViewController: PopupSaveImageViewControllerDelegate {
         for indexPath in self.selectedIndexPaths {
             let urls = self.images[indexPath.row]
             let ulr = urls.getUrl(quality: quality)
-            RequestService.shared.loadImage(urlString: urls.thumb) { (thumbnailResult) in
-                guard let thumbImage = thumbnailResult else {
+            CoreDataManager.shared.isImageUrlContainsInCoreData(urls) { isContains in
+                if isContains {
                     DispatchQueue.main.async {
-                        finishedWithError += 1
                         count += 1
                         self.updateSaveProgress(currentSaveCount: count, total: self.selectedIndexPaths.count, errorCount: finishedWithError)
                     }
                     return
                 }
-                RequestService.shared.loadImage(urlString: ulr, useCache: false) { (qualityResult) in
-                    guard let qualityImage = qualityResult else {
+                RequestService.shared.loadImage(urlString: urls.thumb) { (thumbnailResult) in
+                    guard let thumbImage = thumbnailResult else {
                         DispatchQueue.main.async {
                             finishedWithError += 1
                             count += 1
@@ -377,12 +370,22 @@ extension SearchViewController: PopupSaveImageViewControllerDelegate {
                         }
                         return
                     }
-                    CoreDataManager.shared.saveImage(thumbnailImage: thumbImage, fullimage: qualityImage, imageURLs: urls)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
-                        print("success saving")
-                        count += 1
-                        self.updateSaveProgress(currentSaveCount: count, total: self.selectedIndexPaths.count, errorCount: finishedWithError)
-                    })
+                    RequestService.shared.loadImage(urlString: ulr, useCache: false) { (qualityResult) in
+                        guard let qualityImage = qualityResult else {
+                            DispatchQueue.main.async {
+                                finishedWithError += 1
+                                count += 1
+                                self.updateSaveProgress(currentSaveCount: count, total: self.selectedIndexPaths.count, errorCount: finishedWithError)
+                            }
+                            return
+                        }
+                        CoreDataManager.shared.saveImage(thumbnailImage: thumbImage, fullimage: qualityImage, imageURLs: urls)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+                            print("success saving")
+                            count += 1
+                            self.updateSaveProgress(currentSaveCount: count, total: self.selectedIndexPaths.count, errorCount: finishedWithError)
+                        })
+                    }
                 }
             }
         }

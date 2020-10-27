@@ -16,6 +16,7 @@ class MainViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        CoreDataManager.shared.prefetchImages(completion: nil)
         self.navigationController?.modalPresentationStyle = .fullScreen
         self.navigationController?.hidesBottomBarWhenPushed = true
         let vc = SearchViewController(nibName: "SearchViewController", bundle: nil)

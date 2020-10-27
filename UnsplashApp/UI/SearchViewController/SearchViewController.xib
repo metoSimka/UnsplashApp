@@ -26,10 +26,8 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchViewController" customModule="UnsplashApp" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="QCF-CL-ZgL" id="rO8-qd-Xzs"/>
-                <outlet property="labelSaving" destination="ylB-40-EZu" id="tRZ-BD-CCq"/>
                 <outlet property="libraryPageButton" destination="tyH-SA-X8x" id="ETB-zo-lWT"/>
                 <outlet property="saveButton" destination="F5X-gv-34L" id="2sL-iI-5g8"/>
-                <outlet property="savingSpinnerContainer" destination="3e9-v6-OqI" id="pmC-Sa-57X"/>
                 <outlet property="selectButton" destination="knv-lI-gcE" id="TRV-gv-B1x"/>
                 <outlet property="textField" destination="aDL-Db-4U8" id="3GF-ek-MBI"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -262,35 +260,6 @@
                         <constraint firstAttribute="height" constant="1" id="ZaQ-Sp-P4C"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3e9-v6-OqI">
-                    <rect key="frame" x="132" y="392.5" width="150" height="111"/>
-                    <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Saving" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylB-40-EZu" userLabel="Saving">
-                            <rect key="frame" x="16" y="24" width="118" height="19.5"/>
-                            <fontDescription key="fontDescription" name="SFProText-Regular" family="SF Pro Text" pointSize="16"/>
-                            <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="7QJ-xP-QQz">
-                            <rect key="frame" x="65" y="59.5" width="20" height="20"/>
-                        </activityIndicatorView>
-                    </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    <constraints>
-                        <constraint firstAttribute="width" secondItem="3e9-v6-OqI" secondAttribute="height" multiplier="1.35" id="7ZB-f0-UK6"/>
-                        <constraint firstItem="ylB-40-EZu" firstAttribute="top" secondItem="3e9-v6-OqI" secondAttribute="top" constant="24" id="A8M-J8-Sii"/>
-                        <constraint firstAttribute="width" constant="150" id="G9H-Lg-Vk7"/>
-                        <constraint firstItem="7QJ-xP-QQz" firstAttribute="centerX" secondItem="3e9-v6-OqI" secondAttribute="centerX" id="Kui-tU-sV4"/>
-                        <constraint firstItem="7QJ-xP-QQz" firstAttribute="top" secondItem="ylB-40-EZu" secondAttribute="bottom" constant="16" id="WeJ-xb-RC6"/>
-                        <constraint firstItem="ylB-40-EZu" firstAttribute="leading" secondItem="3e9-v6-OqI" secondAttribute="leading" constant="16" id="ZPy-WZ-4Kk"/>
-                        <constraint firstAttribute="trailing" secondItem="ylB-40-EZu" secondAttribute="trailing" constant="16" id="fkm-vu-nGG"/>
-                    </constraints>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                            <real key="value" value="8"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -299,8 +268,6 @@
                 <constraint firstAttribute="bottom" secondItem="EyY-4h-utD" secondAttribute="bottom" id="Agf-UJ-QPb"/>
                 <constraint firstItem="fQa-SI-lgC" firstAttribute="top" secondItem="pWW-DT-JOP" secondAttribute="bottom" id="BoI-Rp-CIc"/>
                 <constraint firstItem="pWW-DT-JOP" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="CP0-3Z-idK"/>
-                <constraint firstItem="3e9-v6-OqI" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="FwD-Nn-xdA"/>
-                <constraint firstItem="3e9-v6-OqI" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="Hz7-Dz-W7x"/>
                 <constraint firstItem="fQa-SI-lgC" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Ih1-40-Ajz"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="fQa-SI-lgC" secondAttribute="trailing" id="IsW-qI-LOX"/>
                 <constraint firstItem="QCF-CL-ZgL" firstAttribute="top" secondItem="fQa-SI-lgC" secondAttribute="bottom" id="Jbi-rA-pNd"/>

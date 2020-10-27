@@ -13,9 +13,9 @@ import CoreData
 class CoreDataManager {
 
     static let shared = CoreDataManager()
-    
-    public var fetchedImages: [UIImage] = []
-    
+//    
+    private var fetchedImages: [Thumbnail] = []
+//    
     private init() {
         coreDataSetup()
     }
@@ -26,11 +26,26 @@ class CoreDataManager {
     var managedContext : NSManagedObjectContext?
 
     var threadContext: NSManagedObjectContext?
-//    public func prefetchImages() {
-//        fetchImagesFromCoreData() { images in
-//            self.fetchedImages = images
-//        }
-//    }
+    
+    public func getPrefetchedImages(_ completion: @escaping([Thumbnail])->Void) {
+        if fetchedImages.isEmpty {
+            prefetchImages() { result in
+                DispatchQueue.main.async {
+                    self.fetchedImages = result ?? []
+                    completion(self.fetchedImages)
+                }
+            }
+        } else {
+            completion(self.fetchedImages)
+        }
+    }
+
+    public func prefetchImages(completion: (([Thumbnail]?)->Void)?) {
+        CoreDataManager.shared.loadImages { (result) in
+            self.fetchedImages = result ?? []
+            completion?(result)
+        }
+    }
     
     public func clearAllCoreData() {
         clearCoreData(entity: "HResolution")
@@ -89,6 +104,22 @@ class CoreDataManager {
         }
     }
     
+    public func isImageUrlContainsInCoreData(_ imageUrls: ImageURLs, completion: @escaping(Bool) -> Void) {
+        var existingEntityUrls: [String] = []
+        self.loadImages { (entities) in
+            guard let imageEntities = entities else {
+                return
+            }
+            for imageEntity in imageEntities {
+                let url = imageEntity.url
+                existingEntityUrls.append(url)
+            }
+            let isContains = self.isImageUrlContains(imageURls: imageUrls, in: existingEntityUrls)
+            completion(isContains)
+        }
+
+    }
+    
     private func isImageUrlContains(imageURls: ImageURLs, in urlList: [String]) -> Bool {
         if urlList.contains(imageURls.thumb) ||
             urlList.contains(imageURls.raw) ||
@@ -102,23 +133,8 @@ class CoreDataManager {
     }
     
     func saveImage(thumbnailImage: UIImage, fullimage: UIImage?, imageURLs: ImageURLs) {
-        // dispatch with gcd.
         let date: Double = NSDate().timeIntervalSince1970
         convertQueue.async {
-            var existingEntityUrls: [String] = []
-            self.loadImages { (entities) in
-                guard let imageEntities = entities else {
-                    return
-                }
-                for imageEntity in imageEntities {
-                    let url = imageEntity.url
-                    existingEntityUrls.append(url)
-                }
-            }
-            guard self.isImageUrlContains(imageURls: imageURLs, in: existingEntityUrls) == false else {
-                print("image alreadyContains")
-                return
-            }
             guard let thumbImageData = thumbnailImage.jpegData(compressionQuality: 1) else {
                 print("jpg error")
                 return
